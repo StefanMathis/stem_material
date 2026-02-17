@@ -8,7 +8,7 @@ stem_material
 [var_quantity]: https://crates.io/crates/var_quantity
 
 This crate provides a [`Material`] definition for simulation of electromagnetic
-devices – especially electric motors – built on topof the [var_quantity] crate.
+devices – especially electric motors – built on top of the [var_quantity] crate.
 It is used to define motor components within stem - a Simulation Toolbox for
 Electric Motors. See the [stem book](https://stefanmathis.github.io/stem_book/)
 for an introduction to the framework.
