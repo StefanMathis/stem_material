@@ -1,0 +1,41 @@
+[package]
+name = "stem_material"
+version = "0.1.0"
+edition = "2024"
+description = "Material definition for stem - a Simulation Toolbox for Electric Motors."
+readme = "README.md"
+license  = "MIT OR Apache-2.0"
+repository = "https://github.com/StefanMathis/stem_material.git"
+[lib]
+name = "stem_material"
+path = "src/lib.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+var_quantity = { version = "0.2.0" }
+akima_spline = { version = "0.1.5" }
+argmin = { version = "0.11", default-features = false }
+argmin-math = "0.5" # Explicit dependency is necessary for implementation of ArgminAdd
+serde_mosaic = { version = "0.1", optional = true }
+deserialize_untagged_verbose_error = { version = "0.1.5", optional = true }
+serde = { version = "1", features = ["derive", "rc"], optional = true }
+uom = {version = "0.36", default-features = false, features = ["f64", "si", "std"]}
+dyn_quantity = { version = "0.5.4", features = ["uom"] }
+lazy_static = "1"
+typetag = { version = "^0.2", optional = true }
+
+[features]
+default = []
+serde = ["dep:serde_mosaic", "dep:deserialize_untagged_verbose_error", "akima_spline/serde",
+"dep:serde", "dep:typetag", "uom/serde", "dyn_quantity/serde", "var_quantity/serde", "var_quantity/from_str"]
+
+[dev-dependencies]
+serde_yaml = "0.8"
+serde_mosaic = { version = "0.1", features = ["serde_yaml"] }
+approx = { package = "approxim", version = "0.6" }
+indoc = "1.0"
+stem_material = { path = ".", features = ["serde"] }
+
+[package.metadata.docs.rs]
+features = ["serde", "from_str"]
