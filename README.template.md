@@ -7,11 +7,11 @@ stem_material
 [jordan_module]: https://docs.rs/stem_material/{{VERSION}}/stem_material/jordan_model
 [var_quantity]: https://crates.io/crates/var_quantity
 
-This crate provides a [`Material`] definition for electromagnetics built on top
-of the [var_quantity] crate. It is used
-to define motor components within stem - a Simulation Toolbox for Electric
-Motors. See the [stem book](https://stefanmathis.github.io/stem_book/) for an
-introduction to the framework.
+This crate provides a [`Material`] definition for simulation of electromagnetic
+devices – especially electric motors – built on topof the [var_quantity] crate.
+It is used to define motor components within stem - a Simulation Toolbox for
+Electric Motors. See the [stem book](https://stefanmathis.github.io/stem_book/)
+for an introduction to the framework.
 
 Due to the aforementioned tight coupling with [var_quantity], this crate
 reexports it. It also heavily relies on the [uom](https://crates.io/crates/uom)
