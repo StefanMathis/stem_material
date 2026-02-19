@@ -1,6 +1,6 @@
 [package]
 name = "stem_material"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 description = "Material definition for stem - a Simulation Toolbox for Electric Motors."
 readme = "README.md"
@@ -38,4 +38,4 @@ indoc = "1.0"
 stem_material = { path = ".", features = ["serde"] }
 
 [package.metadata.docs.rs]
-features = ["serde", "from_str"]
+features = ["serde"]

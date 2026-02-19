@@ -1,14 +1,14 @@
 stem_material
 =============
 
-[`Material`]: https://docs.rs/stem_material/0.1.0/stem_material/struct.Material.html
-[`FerromagneticPermeability`]: https://docs.rs/stem_material/0.1.0/stem_material/ferromagnetic_permeability/struct.FerromagneticPermeability.html
-[`JordanModel`]: https://docs.rs/stem_material/0.1.0/stem_material/jordan_model/struct.JordanModel.html
-[jordan_module]: https://docs.rs/stem_material/0.1.0/stem_material/jordan_model
+[`Material`]: https://docs.rs/stem_material/0.1.1/stem_material/struct.Material.html
+[`FerromagneticPermeability`]: https://docs.rs/stem_material/0.1.1/stem_material/ferromagnetic_permeability/struct.FerromagneticPermeability.html
+[`JordanModel`]: https://docs.rs/stem_material/0.1.1/stem_material/jordan_model/struct.JordanModel.html
+[module]: https://docs.rs/stem_material/0.1.1/stem_material/jordan_model
 [var_quantity]: https://crates.io/crates/var_quantity
 
 This crate provides a [`Material`] definition for simulation of electromagnetic
-devices – especially electric motors – built on topof the [var_quantity] crate.
+devices – especially electric motors – built on top of the [var_quantity] crate.
 It is used to define motor components within stem - a Simulation Toolbox for
 Electric Motors. See the [stem book](https://stefanmathis.github.io/stem_book/)
 for an introduction to the framework.
@@ -33,7 +33,7 @@ strength `H` or the magnetic flux density `B` can be used to calculate the
 relative permeability of a material.
 - The [`JordanModel`] type provides a simple and fast model for calculating
 hysteresis and eddy current losses based on the equation
-`p = kh * f * B² + kec * (f * B)²`. The accompanying [module](jordan_module)
+`p = kh * f * B² + kec * (f * B)²`. The accompanying [module]
 offers ergonomic ways to obtain the the loss coefficients `kh` and `kec` using
 least-square fitting.
 
@@ -47,4 +47,4 @@ deserialization. See the docstrings of the individual types for details.
 # Documentation
 
 The full API documentation is available at
-[https://docs.rs/stem_material/0.1.0/stem_material/](https://docs.rs/stem_material/0.1.0/stem_material/).
+[https://docs.rs/stem_material/0.1.1/stem_material/](https://docs.rs/stem_material/0.1.1/stem_material/).
