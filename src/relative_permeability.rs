@@ -11,7 +11,7 @@ denotes the actual flux per area. They are related via the following equation:
 with `µ0` being the [vacuum permeability](VACUUM_PERMEABILITY) and `µr` being
 the relative permeability of the substance the field is passing through. For a
 ferromagnetic material, `µr` itself is a function of `B` and therefore also of
-`H`. 
+`H`.
 
 For real materials, this function cannot be expressed analytically and is
 usually approximated by interpolating between measured datapoints. For physical
@@ -50,13 +50,6 @@ The image below shows these modifications:
     not(docsrs),
     doc = "\n\n![>> Example image missing, copy folder docs from crate root to doc root folder (where index.html is) to display the image <<](../docs/ferromagnetic_characteristic_mod.svg)"
 )]
-#![doc = r#"
-`µr,Fe` shows the spline curve which would result from the datapoints (crosses)
-without (1) or (2). `µr*,Fe` takes the effect of lamination into account (see
-fields [`MagnetizationCurve::iron_fill_factor`] and
-[`PolarizationCurve::iron_fill_factor`], while `µr**,Fe` shows the resulting
-curve with the modifications (1) and (2).
-"#]
 
 use std::f64::INFINITY;
 
@@ -64,7 +57,7 @@ use akima_spline::AkimaSpline;
 use dyn_quantity::{DynQuantity, PredefUnit, Unit};
 use uom::si::magnetic_field_strength::ampere_per_meter;
 use uom::si::magnetic_flux_density::tesla;
-use var_quantity::IsQuantityFunction;
+use var_quantity::{IsQuantityFunction, QuantityFunction};
 
 #[cfg(feature = "serde")]
 use dyn_quantity::deserialize_vec_of_quantities;
@@ -75,6 +68,156 @@ use serde::{Deserialize, Serialize};
 use crate::{VACUUM_PERMEABILITY, VACUUM_PERMEABILITY_UNITLESS};
 
 use uom::si::f64::*;
+
+/**
+A specialized variant of [`VarQuantity<f64>`](var_quantity::VarQuantity) for
+relative permeability.
+
+In principle, the [`FerromagneticPermeability`] case could be treated as a
+[`IsQuantityFunction`] trait object, which would allow using [`VarQuantity<f64>`](var_quantity::VarQuantity) for the
+[`Material::relative_permeability`](crate::material::Material::relative_permeability)
+field. However, using the specialized enum variant
+[`RelativePermeability::FerromagneticPermeability`] instead improves performance
+drastically, since no dynamic dispatch is needed. Nevertheless, user-defined
+permeability models are still supported via the
+[`RelativePermeability::Function`] variant.
+ */
+#[derive(Clone, Debug)]
+pub enum RelativePermeability {
+    /**
+    Optimization for the common case of a constant quantity. This avoids going
+    through dynamic dispatch when accessing the value.
+     */
+    Constant(f64),
+    /**
+    Optimization for the common case of using the [`FerromagneticPermeability`]
+    defined within this crate. This avoids going through dynamic dispatch when
+    accessing the model.
+     */
+    FerromagneticPermeability(FerromagneticPermeability),
+    /**
+    Catch-all variant for any non-constant behaviour. Arbitrary behaviour
+    can be realized with the contained [`IsQuantityFunction`] trait object, as
+    long as the unit constraint outlined in the [`VarQuantity`] docstring is
+    upheld.
+     */
+    Function(QuantityFunction<f64>),
+}
+
+#[cfg(feature = "serde")]
+impl serde::Serialize for RelativePermeability {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        #[derive(Serialize)]
+        enum FerromagneticPermeabilityEnum<'a> {
+            FerromagneticPermeability(&'a FerromagneticPermeability),
+        }
+
+        #[derive(Serialize)]
+        #[serde(untagged)]
+        enum RelativePermeabilitySerde<'a> {
+            Constant(f64),
+            FerromagneticPermeabilityEnum(FerromagneticPermeabilityEnum<'a>),
+            Function(&'a QuantityFunction<f64>),
+        }
+
+        let rp = match self {
+            RelativePermeability::Constant(v) => RelativePermeabilitySerde::Constant(*v),
+            RelativePermeability::FerromagneticPermeability(fp) => {
+                RelativePermeabilitySerde::FerromagneticPermeabilityEnum(
+                    FerromagneticPermeabilityEnum::FerromagneticPermeability(fp),
+                )
+            }
+            RelativePermeability::Function(quantity_function) => {
+                RelativePermeabilitySerde::Function(quantity_function)
+            }
+        };
+        rp.serialize(serializer)
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<'de> serde::Deserialize<'de> for RelativePermeability {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        use serde::Deserialize;
+
+        /**
+        This is a "fake" enum which just exists so the tag
+        "FerromagneticPermeability" is deserialized correctly into [`RelativePermeability::FerromagneticPermeability`] instead of
+        [`RelativePermeability::Function`].
+         */
+        #[derive(Deserialize)]
+        enum FerromagneticPermeabilityEnum {
+            FerromagneticPermeability(FerromagneticPermeability),
+        }
+
+        #[derive(deserialize_untagged_verbose_error::DeserializeUntaggedVerboseError)]
+        enum RelativePermeabilitySerde {
+            Constant(f64),
+            FerromagneticPermeabilityEnum(FerromagneticPermeabilityEnum),
+            Function(QuantityFunction<f64>),
+        }
+
+        let rp_de = RelativePermeabilitySerde::deserialize(deserializer)?;
+        let rp = match rp_de {
+            RelativePermeabilitySerde::Constant(v) => RelativePermeability::Constant(v),
+            RelativePermeabilitySerde::FerromagneticPermeabilityEnum(fp) => match fp {
+                FerromagneticPermeabilityEnum::FerromagneticPermeability(jordan_model) => {
+                    RelativePermeability::FerromagneticPermeability(jordan_model)
+                }
+            },
+            RelativePermeabilitySerde::Function(quantity_function) => {
+                RelativePermeability::Function(quantity_function)
+            }
+        };
+        return Ok(rp);
+    }
+}
+
+impl RelativePermeability {
+    /**
+    Matches against `self` and calculates the iron losses (or just return the
+    value in case of the [`RelativePermeability::Constant`]) variant).
+    */
+    pub fn get(&self, influencing_factors: &[DynQuantity<f64>]) -> f64 {
+        match self {
+            Self::Constant(val) => val.clone(),
+            Self::FerromagneticPermeability(model) => model.call(influencing_factors).try_into().expect("implementation of FerromagneticPermeability makes sure the returned value is always a f64"),
+            Self::Function(fun) => fun.call(influencing_factors),
+        }
+    }
+
+    /**
+    Returns a reference to the underlying function if `self` is a
+    [`RelativePermeability::Function`].
+     */
+    pub fn function(&self) -> Option<&dyn IsQuantityFunction> {
+        match self {
+            Self::Function(quantity_function) => return Some(quantity_function.as_ref()),
+            _ => return None,
+        }
+    }
+}
+
+impl TryFrom<Box<dyn IsQuantityFunction>> for RelativePermeability {
+    type Error = dyn_quantity::UnitsNotEqual;
+
+    fn try_from(value: Box<dyn IsQuantityFunction>) -> Result<Self, Self::Error> {
+        let wrapper = QuantityFunction::new(value)?;
+        return Ok(Self::Function(wrapper));
+    }
+}
+
+impl From<f64> for RelativePermeability {
+    fn from(value: f64) -> Self {
+        return Self::Constant(value);
+    }
+}
 
 /**
 A ferromagnetic permeability characteristic optimized for calculations.

@@ -1,8 +1,36 @@
-use stem_material::*;
+use stem_material::jordan_model::*;
+use uom::si::f64::*;
+use uom::si::frequency::hertz;
+use uom::si::magnetic_flux_density::tesla;
 use uom::si::specific_power::watt_per_kilogram;
 
-#[test]
-fn test_iron_losses_1() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /*
+    Creates `IronLossCharacteristic`s from individual `FluxDensityLossPair`
+    value data pairs. Multiple characteristics are concatenated into
+    `IronLossData`, which is then used to derive a Jordan model from it.
+    Lastly, the loss coefficients of the model are compared to expected values.
+     */
+    from_flux_density_loss_pair()?;
+
+    /*
+    Creates `IronLossCharacteristic`s from vectors of flux densities and losses.
+    Multiple characteristics are concatenated into `IronLossData`, which is then
+    used to derive a Jordan model from it. Lastly, the loss coefficients of the
+    model are compared to expected values.
+     */
+    from_vecs()?;
+
+    return Ok(());
+}
+
+/**
+Creates `IronLossCharacteristic`s from individual `FluxDensityLossPair`
+value data pairs. Multiple characteristics are concatenated into
+`IronLossData`, which is then used to derive a Jordan model from it.
+Lastly, the loss coefficients of the model are compared to expected values.
+    */
+fn from_flux_density_loss_pair() -> Result<(), Box<dyn std::error::Error>> {
     let iron_loss_data = IronLossData(vec![
         IronLossCharacteristic::new(
             Frequency::new::<hertz>(50.0),
@@ -165,7 +193,7 @@ fn test_iron_losses_1() {
         ),
     ]);
 
-    let coeffs = JordanModel::try_from(&iron_loss_data).unwrap();
+    let coeffs = JordanModel::try_from(&iron_loss_data)?;
     approx::assert_abs_diff_eq!(
         coeffs.hysteresis_coefficient.get::<watt_per_kilogram>(),
         2.109,
@@ -176,10 +204,16 @@ fn test_iron_losses_1() {
         0.598,
         epsilon = 0.001
     );
+    return Ok(());
 }
 
-#[test]
-fn test_iron_losses_2() {
+/**
+Creates `IronLossCharacteristic`s from vectors of flux densities and losses.
+Multiple characteristics are concatenated into `IronLossData`, which is then
+used to derive a Jordan model from it. Lastly, the loss coefficients of the
+model are compared to expected values.
+    */
+fn from_vecs() -> Result<(), Box<dyn std::error::Error>> {
     let iron_loss_data = IronLossData(vec![
         IronLossCharacteristic::from_vecs(
             Frequency::new::<hertz>(50.0),
@@ -225,7 +259,7 @@ fn test_iron_losses_2() {
         ),
     ]);
 
-    let coeffs = JordanModel::try_from(&iron_loss_data).unwrap();
+    let coeffs = JordanModel::try_from(&iron_loss_data)?;
     approx::assert_abs_diff_eq!(
         coeffs.hysteresis_coefficient.get::<watt_per_kilogram>(),
         4.257,
@@ -236,4 +270,5 @@ fn test_iron_losses_2() {
         1.262,
         epsilon = 0.001
     );
+    return Ok(());
 }

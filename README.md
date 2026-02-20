@@ -13,17 +13,13 @@ It is used to define motor components within stem - a Simulation Toolbox for
 Electric Motors. See the [stem book](https://stefanmathis.github.io/stem_book/)
 for an introduction to the framework.
 
-Due to the aforementioned tight coupling with [var_quantity], this crate
-reexports it. It also heavily relies on the [uom](https://crates.io/crates/uom)
-crate for providing static quantities. The resulting interface is therefore hard
-to misuse, as it doesn't matter whether e.g. the density of a material is given
-as kg/m³ or as g/cm³ - uom will take care of the conversions automatically.
-
 # Modeling soft magnetism
 
-Even though this crate is foundational for stem, some of its components might
-also be useful outside of it. In particular, it offers the following types to
-model soft magnetism:
+Even though this crate is foundational for stem, some of its features are
+also be useful outside of it.
+
+## Ferromagnetic permeability
+
 - The [`FerromagneticPermeability`] struct offers a spline-based way to model the
 ferromagnetic behaviour of a material from measured datapoints. It is
 particularily optimized for usage with iterative solvers and slightly modifies
@@ -31,11 +27,20 @@ the resulting curve to achieve numerical stability and fast convergence. It
 models both `µr = f(H)` and `µr = f(B)`, meaning that either the magnetic field
 strength `H` or the magnetic flux density `B` can be used to calculate the
 relative permeability of a material.
+Image
+
+`examples/ferromagnetic_permeability.rs`
+
+## Jordan model for iron losse
+
+
 - The [`JordanModel`] type provides a simple and fast model for calculating
 hysteresis and eddy current losses based on the equation
 `p = kh * f * B² + kec * (f * B)²`. The accompanying [module]
 offers ergonomic ways to obtain the the loss coefficients `kh` and `kec` using
 least-square fitting.
+
+`examples/jordan_model.rs`
 
 # Serialization and deserialization
 

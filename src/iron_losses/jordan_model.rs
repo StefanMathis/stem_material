@@ -100,6 +100,7 @@ use uom::si::specific_power::watt_per_kilogram;
 use uom::si::thermodynamic_temperature::degree_celsius;
 use uom::si::frequency::hertz;
 use uom::si::magnetic_flux_density::tesla;
+use var_quantity::*;
 
 let model = JordanModel {
     hysteresis_coefficient: SpecificPower::new::<watt_per_kilogram>(1.0),

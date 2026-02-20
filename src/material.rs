@@ -22,6 +22,9 @@ pub use uom::si::{
     thermodynamic_temperature::degree_celsius,
 };
 
+use crate::iron_losses::*;
+use crate::relative_permeability::*;
+
 /**
 SI-value of the vacuum magnetic permeability (4π*1e-7 N*A²) without units.
 
@@ -115,13 +118,13 @@ pub struct Material {
     ///
     /// Defaults to 1.
     #[cfg_attr(feature = "serde", serde(default = "default_relative_permeability"))]
-    pub relative_permeability: VarQuantity<f64>,
+    pub relative_permeability: RelativePermeability,
 
     /// Specific iron losses of `self`.
     ///
     /// Defaults to 0 W/kg.
     #[cfg_attr(feature = "serde", serde(default = "default_iron_losses"))]
-    pub iron_losses: VarQuantity<SpecificPower>,
+    pub iron_losses: IronLosses,
 
     /// Remanence of `self`. This value is usually zero except for permanent
     /// magnets. For permanent magnets, this value is expected to be the remance
@@ -177,25 +180,25 @@ impl Material {
     }
 
     /// Returns the relative permeability of `self`.
-    pub fn relative_permeability(&self) -> &VarQuantity<f64> {
+    pub fn relative_permeability(&self) -> &RelativePermeability {
         return &self.relative_permeability;
     }
 
     /// Sets a new relative permeability and returns the old one.
-    pub fn set_relative_permeability(&mut self, property: VarQuantity<f64>) -> VarQuantity<f64> {
+    pub fn set_relative_permeability(
+        &mut self,
+        property: RelativePermeability,
+    ) -> RelativePermeability {
         return mem::replace(&mut self.relative_permeability, property);
     }
 
     /// Returns the specific iron losses of `self`.
-    pub fn iron_losses(&self) -> &VarQuantity<SpecificPower> {
+    pub fn iron_losses(&self) -> &IronLosses {
         return &self.iron_losses;
     }
 
     /// Sets new specific iron losses and returns the old ones.
-    pub fn set_iron_losses(
-        &mut self,
-        property: VarQuantity<SpecificPower>,
-    ) -> VarQuantity<SpecificPower> {
+    pub fn set_iron_losses(&mut self, property: IronLosses) -> IronLosses {
         return mem::replace(&mut self.iron_losses, property);
     }
 
@@ -302,12 +305,12 @@ impl DatabaseEntry for Material {
     }
 }
 
-fn default_relative_permeability() -> VarQuantity<f64> {
-    return VarQuantity::Constant(1.0);
+fn default_relative_permeability() -> RelativePermeability {
+    return RelativePermeability::Constant(1.0);
 }
 
-fn default_iron_losses() -> VarQuantity<SpecificPower> {
-    return VarQuantity::Constant(SpecificPower::new::<watt_per_kilogram>(0.0));
+fn default_iron_losses() -> IronLosses {
+    return IronLosses::Constant(SpecificPower::new::<watt_per_kilogram>(0.0));
 }
 
 fn default_remanence() -> VarQuantity<MagneticFluxDensity> {

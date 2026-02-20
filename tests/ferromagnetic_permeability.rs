@@ -1,4 +1,5 @@
 use stem_material::*;
+use var_quantity::IsQuantityFunction;
 
 #[test]
 fn test_relative_permeability() {

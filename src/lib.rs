@@ -1,11 +1,10 @@
 #![doc = include_str!("../README.md")]
 #![deny(missing_docs)]
 
-mod ferromagnetic_permeability;
-mod jordan_model;
-mod material;
+pub mod iron_losses;
+pub mod material;
+pub mod relative_permeability;
 
-pub use ferromagnetic_permeability::*;
-pub use jordan_model::*;
+pub use iron_losses::*;
 pub use material::*;
-pub use var_quantity::*;
+pub use relative_permeability::*;

@@ -1,5 +1,6 @@
 use indoc::indoc;
 use stem_material::*;
+use var_quantity::IsQuantityFunction;
 
 #[test]
 fn test_serialize_and_deserialize_relative_permeability() {

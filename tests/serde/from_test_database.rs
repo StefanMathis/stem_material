@@ -146,8 +146,7 @@ fn test_lamination_2() {
     );
 
     // Calculated loss coefficients
-    if let VarQuantity::Function(fun) = lamination.iron_losses {
-        let model: &JordanModel = (fun.as_ref() as &dyn std::any::Any).downcast_ref().unwrap();
+    if let IronLosses::JordanModel(model) = lamination.iron_losses {
         approx::assert_abs_diff_eq!(
             model.hysteresis_coefficient.get::<watt_per_kilogram>(),
             4.257,

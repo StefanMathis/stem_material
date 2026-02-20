@@ -1,11 +1,9 @@
-use std::any::Any;
-
 use dyn_quantity::{DynQuantity, PredefUnit, Unit};
 use indoc::indoc;
 use stem_material::*;
 use uom::si::magnetic_flux_density::tesla;
 use uom::si::specific_power::watt_per_kilogram;
-use var_quantity::unary::Linear;
+use var_quantity::{VarQuantity, unary::Linear};
 
 #[test]
 fn test_serialize_material() {
@@ -181,23 +179,28 @@ fn test_deserialize_material() {
         epsilon = 1e-12
     );
 
-    if let VarQuantity::Function(fw) = material.iron_losses.clone() {
-        {
-            let model = (fw.as_ref() as &dyn Any)
-                .downcast_ref::<JordanModel>()
-                .unwrap();
+    if let RelativePermeability::FerromagneticPermeability(model) = &material.relative_permeability
+    {
+        approx::assert_abs_diff_eq!(
+            model.get(MagneticFluxDensity::new::<tesla>(0.5)),
+            3801.0,
+            epsilon = 0.1
+        );
+    } else {
+        panic!("wrong model");
+    }
 
-            approx::assert_abs_diff_eq!(
-                model.eddy_current_coefficient.get::<watt_per_kilogram>(),
-                1.2615,
-                epsilon = 0.001
-            );
-            approx::assert_abs_diff_eq!(
-                model.hysteresis_coefficient.get::<watt_per_kilogram>(),
-                4.2568,
-                epsilon = 0.001
-            );
-        }
+    if let IronLosses::JordanModel(model) = &material.iron_losses {
+        approx::assert_abs_diff_eq!(
+            model.eddy_current_coefficient.get::<watt_per_kilogram>(),
+            1.2615,
+            epsilon = 0.001
+        );
+        approx::assert_abs_diff_eq!(
+            model.hysteresis_coefficient.get::<watt_per_kilogram>(),
+            4.2568,
+            epsilon = 0.001
+        );
     } else {
         panic!("wrong model");
     }

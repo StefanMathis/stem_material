@@ -1,6 +1,7 @@
 use indoc::indoc;
 use stem_material::*;
 use uom::si::specific_power::watt_per_kilogram;
+use var_quantity::VarQuantity;
 
 #[test]
 fn test_serialize_and_deserialize_iron_losses() {
@@ -167,9 +168,9 @@ fn test_serialize_and_deserialize_material() {
                 .unwrap()
                 .try_into()
                 .unwrap();
-        material.set_relative_permeability(
-            VarQuantity::try_from_quantity_function(permeability).unwrap(),
-        );
+        material.set_relative_permeability(RelativePermeability::FerromagneticPermeability(
+            permeability,
+        ));
     }
 
     let serialized = serde_yaml::to_string(&material).unwrap();
@@ -219,8 +220,7 @@ fn test_deserialize_material_only_iron_losses() {
             eddy_current_coefficient: 1.0
         "};
         let material: Material = serde_yaml::from_str(&serialized).unwrap();
-        if let VarQuantity::Function(fun) = material.iron_losses {
-            let model: &JordanModel = (fun.as_ref() as &dyn std::any::Any).downcast_ref().unwrap();
+        if let IronLosses::JordanModel(model) = &material.iron_losses {
             assert_eq!(
                 model.hysteresis_coefficient,
                 SpecificPower::new::<watt_per_kilogram>(0.2)
@@ -230,7 +230,7 @@ fn test_deserialize_material_only_iron_losses() {
                 SpecificPower::new::<watt_per_kilogram>(1.0)
             );
         } else {
-            panic!("should not be a constant")
+            panic!("wrong model")
         }
     }
     {
@@ -243,8 +243,7 @@ fn test_deserialize_material_only_iron_losses() {
             eddy_current_coefficient: 1000 mW / kg
         "};
         let material: Material = serde_yaml::from_str(&serialized).unwrap();
-        if let VarQuantity::Function(fun) = material.iron_losses {
-            let model: &JordanModel = (fun.as_ref() as &dyn std::any::Any).downcast_ref().unwrap();
+        if let IronLosses::JordanModel(model) = &material.iron_losses {
             assert_eq!(
                 model.hysteresis_coefficient,
                 SpecificPower::new::<watt_per_kilogram>(0.2)
