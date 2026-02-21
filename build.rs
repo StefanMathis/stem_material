@@ -14,6 +14,19 @@ fn main() {
             .as_str(),
     );
 
+    // Generate README_local.md using local images
+    let mut local = readme.replace(
+        "{{relative_permeability.svg}}",
+        "docs/relative_permeability.svg",
+    );
+    local = local.replace("{{jordan_model.svg}}", "docs/jordan_model.svg");
+    std::fs::write("README_local.md", local).unwrap();
+
     // Generate README.md using online hosted images
-    std::fs::write("README.md", readme).unwrap();
+    let mut docsrs = readme.replace(
+        "{{relative_permeability.svg}}",
+        "https://raw.githubusercontent.com/StefanMathis/akima_spline/refs/heads/main/docs/relative_permeability.svg",
+    );
+    docsrs = docsrs.replace("{{jordan_model.svg}}", "https://raw.githubusercontent.com/StefanMathis/akima_spline/refs/heads/main/docs/jordan_model.svg");
+    std::fs::write("README.md", docsrs).unwrap();
 }

@@ -1,10 +1,10 @@
 stem_material
 =============
 
-[`Material`]: https://docs.rs/stem_material/{{VERSION}}/stem_material/struct.Material.html
-[`FerromagneticPermeability`]: https://docs.rs/stem_material/{{VERSION}}/stem_material/ferromagnetic_permeability/struct.FerromagneticPermeability.html
-[`JordanModel`]: https://docs.rs/stem_material/{{VERSION}}/stem_material/jordan_model/struct.JordanModel.html
-[module]: https://docs.rs/stem_material/{{VERSION}}/stem_material/jordan_model
+[`Material`]: https://docs.rs/stem_material/0.1.1/stem_material/struct.Material.html
+[`FerromagneticPermeability`]: https://docs.rs/stem_material/0.1.1/stem_material/ferromagnetic_permeability/struct.FerromagneticPermeability.html
+[`JordanModel`]: https://docs.rs/stem_material/0.1.1/stem_material/jordan_model/struct.JordanModel.html
+[module]: https://docs.rs/stem_material/0.1.1/stem_material/jordan_model
 [var_quantity]: https://crates.io/crates/var_quantity
 
 This crate provides a [`Material`] definition for simulation of electromagnetic
@@ -29,7 +29,7 @@ strength `H` or the magnetic flux density `B` can be used to calculate the
 relative permeability of a material.
 Imagerelative_permeability
 
-![]({{relative_permeability.svg}} "Relative permeability")
+![](docs/relative_permeability.svg "Relative permeability")
 
 ## Jordan model for iron losse
 
@@ -39,7 +39,7 @@ hysteresis and eddy current losses based on the equation
 offers ergonomic ways to obtain the the loss coefficients `kh` and `kec` using
 least-square fitting.
 
-![]({{jordan_model.svg}} "Jordan model")
+![](docs/jordan_model.svg "Jordan model")
 
 # Serialization and deserialization
 
@@ -51,4 +51,4 @@ deserialization. See the docstrings of the individual types for details.
 # Documentation
 
 The full API documentation is available at
-[https://docs.rs/stem_material/{{VERSION}}/stem_material/](https://docs.rs/stem_material/{{VERSION}}/stem_material/).
+[https://docs.rs/stem_material/0.1.1/stem_material/](https://docs.rs/stem_material/0.1.1/stem_material/).

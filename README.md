@@ -27,12 +27,11 @@ the resulting curve to achieve numerical stability and fast convergence. It
 models both `µr = f(H)` and `µr = f(B)`, meaning that either the magnetic field
 strength `H` or the magnetic flux density `B` can be used to calculate the
 relative permeability of a material.
-Image
+Imagerelative_permeability
 
-`examples/ferromagnetic_permeability.rs`
+![](https://raw.githubusercontent.com/StefanMathis/akima_spline/refs/heads/main/docs/relative_permeability.svg "Relative permeability")
 
 ## Jordan model for iron losse
-
 
 - The [`JordanModel`] type provides a simple and fast model for calculating
 hysteresis and eddy current losses based on the equation
@@ -40,7 +39,7 @@ hysteresis and eddy current losses based on the equation
 offers ergonomic ways to obtain the the loss coefficients `kh` and `kec` using
 least-square fitting.
 
-`examples/jordan_model.rs`
+![](https://raw.githubusercontent.com/StefanMathis/akima_spline/refs/heads/main/docs/jordan_model.svg "Jordan model")
 
 # Serialization and deserialization
 
