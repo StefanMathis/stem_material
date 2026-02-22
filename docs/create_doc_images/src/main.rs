@@ -348,7 +348,7 @@ fn plot_jordan_model() -> Result<(), Box<dyn std::error::Error>> {
                     color.clone().filled(),
                 )
             }))?
-            .label(&format!("loss data {f} Hz"))
+            .label(&format!("loss data @ {f} Hz"))
             .legend(move |(x, y)| Cross::new((x + 10, y), 5.0, color.filled()));
 
         let mut fd_vec = Vec::new();
