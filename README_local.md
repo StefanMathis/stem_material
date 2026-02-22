@@ -1,10 +1,10 @@
 stem_material
 =============
 
-[`Material`]: https://docs.rs/stem_material/0.1.2/stem_material/struct.Material.html
-[`FerromagneticPermeability`]: https://docs.rs/stem_material/0.1.2/stem_material/ferromagnetic_permeability/struct.FerromagneticPermeability.html
-[`JordanModel`]: https://docs.rs/stem_material/0.1.2/stem_material/jordan_model/struct.JordanModel.html
-[module]: https://docs.rs/stem_material/0.1.2/stem_material/jordan_model
+[`Material`]: https://docs.rs/stem_material/0.2.0/stem_material/struct.Material.html
+[`FerromagneticPermeability`]: https://docs.rs/stem_material/0.2.0/stem_material/ferromagnetic_permeability/struct.FerromagneticPermeability.html
+[`JordanModel`]: https://docs.rs/stem_material/0.2.0/stem_material/jordan_model/struct.JordanModel.html
+[module]: https://docs.rs/stem_material/0.2.0/stem_material/jordan_model
 [var_quantity]: https://crates.io/crates/var_quantity
 
 This crate provides a [`Material`] definition for simulation of electromagnetic
@@ -63,4 +63,4 @@ deserialization. See the docstrings of the individual types for details.
 # Documentation
 
 The full API documentation is available at
-[https://docs.rs/stem_material/0.1.2/stem_material/](https://docs.rs/stem_material/0.1.2/stem_material/).
+[https://docs.rs/stem_material/0.2.0/stem_material/](https://docs.rs/stem_material/0.2.0/stem_material/).
