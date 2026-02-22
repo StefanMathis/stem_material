@@ -40,7 +40,18 @@ decreasing behaviour should still be guaranteed and in addition, no nonsensical
 values (e.g. negative permeability) should be calculated. For this reasons, the
 splines are extrapolated and clamped to guarantee these properties.
 
-The image below shows these modifications:
+Measurement data from manufacturers usually refers to the permeability of a
+massive block of material. However, the cores of electric machines are usually
+made from laminated sheets. The glue and insulation usually accounts for 2 % to
+8 % of the sheet thickness and reduces the permeability of the lamination stack
+(since its relative permeability is around 1). The fields
+[`MagnetizationCurve::iron_fill_factor`] and
+[`PolarizationCurve::iron_fill_factor`] can be used to model that reduction.
+
+In the image below, the modifications (1) and (2) are clearly visible.
+Additionally, it shows the comparison between an iron fill factor of 100 %
+(massive material) and a typical lamination ratio of 95 % iron, 5 % glue and
+insulation.
 "#]
 #![cfg_attr(
     docsrs,

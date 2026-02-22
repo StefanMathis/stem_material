@@ -49,8 +49,8 @@ lazy_static::lazy_static! {
 }
 
 /**
-A substance which constitutes an object, e.g. a magnet or a wire in the context
-of [stem](github.com/StefanMathis/stem_book).
+A substance which constitutes an object, e.g. a magnet or a wire in
+[stem](github.com/StefanMathis/stem_book).
 
 This struct is literally just the sum of its parts: It represents a material as
 a collection of properties such as its mass density, electrical resistivity or

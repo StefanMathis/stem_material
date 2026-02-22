@@ -15,29 +15,41 @@ for an introduction to the framework.
 
 # Modeling soft magnetism
 
-Even though this crate is foundational for stem, some of its features are
-also be useful outside of it.
+The following models for soft magnetism can both be used stand-alone and as part
+of a [`Material`].
 
 ## Ferromagnetic permeability
 
-- The [`FerromagneticPermeability`] struct offers a spline-based way to model the
+The [`FerromagneticPermeability`] struct offers a spline-based way to model the
 ferromagnetic behaviour of a material from measured datapoints. It is
 particularily optimized for usage with iterative solvers and slightly modifies
-the resulting curve to achieve numerical stability and fast convergence. It
-models both `µr = f(H)` and `µr = f(B)`, meaning that either the magnetic field
-strength `H` or the magnetic flux density `B` can be used to calculate the
-relative permeability of a material.
-Imagerelative_permeability
+the resulting curve to achieve numerical stability and fast convergence.
+Additionally, it can also take the iron fill factor of lamination sheets into
+account.
+
+The struct models both `µr = f(H)` and `µr = f(B)`, meaning that either the
+magnetic field strength `H` or the magnetic flux density `B` can be used to
+calculate the relative permeability.
+
+The following image shows the (modified) spline derived from raw data both for
+an iron fill factor of 100 % and of 95 % (the other 5 % are modeled as air with
+a relative permeability of 1).
 
 ![]({{relative_permeability.svg}} "Relative permeability")
 
 ## Jordan model for iron losse
 
-- The [`JordanModel`] type provides a simple and fast model for calculating
+The [`JordanModel`] type provides a simple and fast model for calculating
 hysteresis and eddy current losses based on the equation
 `p = kh * f * B² + kec * (f * B)²`. The accompanying [module]
 offers ergonomic ways to obtain the the loss coefficients `kh` and `kec` using
 least-square fitting.
+
+Due to the model only having two parameters, its modeling accuracy is limited.
+The following image shows the raw loss data for different frequencies and the
+interpolated curves created by the according [`JordanModel`]. It can be clearly
+seen that the model precision is very good for small frequencies, but degrades
+for higher frequencies.
 
 ![]({{jordan_model.svg}} "Jordan model")
 

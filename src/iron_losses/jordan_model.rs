@@ -1,4 +1,4 @@
-/*!
+#![doc = r#"
 An implementation of the Jordan model for iron losses in the core lamination.
 
 The Jordan loss model for iron losses offers a simple calculation heuristic for
@@ -27,6 +27,24 @@ the fitting failed for some reason. Lastly, the types
 construction of [`IronLossData`] to guard against bad input data on the type
 level.
 
+# Example
+
+The image below shows a comparison between raw loss data and the fitted
+[`JordanModel`] from `examples/jordan_model.rs`. While the model can represent
+the loss behaviour at lower frequencies very well, it fails at higher
+frequencies for this particular set of data points.
+
+"#]
+#![cfg_attr(
+    docsrs,
+    doc = "\n\n![](https://raw.githubusercontent.com/StefanMathis/stem_material/refs/heads/main/docs/ferromagnetic_characteristic_mod.svg \"Ferromagnetic characteristic\")"
+)]
+#![cfg_attr(
+    not(docsrs),
+    doc = "\n\n![>> Example image missing, copy folder docs from crate root to doc root folder (where index.html is) to display the image <<](../docs/ferromagnetic_characteristic_mod.svg)"
+)]
+#![doc = r#"
+
 # Literature
 
 > [[1]] Krings, A. and Soulard, J.: Overview and comparison of iron loss models
@@ -35,7 +53,7 @@ https://www.researchgate.net/profile/Andreas-Krings/publication/228490936_Overvi
 
 > [[2]] Graham, C. D.: Physical origin of losses in conducting ferromagnetic
 materials. Journal of Applied Physics, vol. 53, no. 11, pp. 8276-8280, Nov.1982
-*/
+"#]
 
 use argmin::{
     core::{CostFunction, State},
@@ -351,8 +369,8 @@ impl CostFunction for FitLossCurve {
         {
             err = err
                 + (*pi - losses(*bi, *fi, hysteresis_coefficient, eddy_current_coefficient))
-                    .abs()
-                    .get::<watt_per_kilogram>();
+                    .get::<watt_per_kilogram>()
+                    .powi(2);
         }
         Ok(err)
     }
@@ -447,10 +465,10 @@ impl IronLossData {
     let c = res.state.get_best_param().expect("must contain coefficients");
 
     // First element is the hysteresis coefficient
-    approx::assert_abs_diff_eq!(c[0], 8.304, epsilon=1e-3);
+    approx::assert_abs_diff_eq!(c[0], 9.528, epsilon=1e-3);
 
     // Second element is the eddy current coefficient
-    approx::assert_abs_diff_eq!(c[1], 6.386, epsilon=1e-3);
+    approx::assert_abs_diff_eq!(c[1], 5.265, epsilon=1e-3);
     ```
      */
     pub fn solve_for_coefficients(

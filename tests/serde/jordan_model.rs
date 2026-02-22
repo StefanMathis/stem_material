@@ -124,14 +124,14 @@ fn test_deserialize_iron_losses() {
         de_iron_loss_coeffs
             .eddy_current_coefficient
             .get::<watt_per_kilogram>(),
-        1.2615,
+        1.2463,
         epsilon = 0.001
     );
     approx::assert_abs_diff_eq!(
         de_iron_loss_coeffs
             .hysteresis_coefficient
             .get::<watt_per_kilogram>(),
-        4.2568,
+        4.2483,
         epsilon = 0.001
     );
 }

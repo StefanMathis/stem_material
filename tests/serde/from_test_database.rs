@@ -149,12 +149,12 @@ fn test_lamination_2() {
     if let IronLosses::JordanModel(model) = lamination.iron_losses {
         approx::assert_abs_diff_eq!(
             model.hysteresis_coefficient.get::<watt_per_kilogram>(),
-            4.257,
+            4.248,
             epsilon = 0.001
         );
         approx::assert_abs_diff_eq!(
             model.eddy_current_coefficient.get::<watt_per_kilogram>(),
-            1.262,
+            1.246,
             epsilon = 0.001
         );
     } else {
