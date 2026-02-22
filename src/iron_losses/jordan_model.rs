@@ -293,10 +293,10 @@ impl JordanModel {
 
 #[cfg_attr(feature = "serde", typetag::serde)]
 impl IsQuantityFunction for JordanModel {
-    fn call(&self, influencing_factors: &[DynQuantity<f64>]) -> DynQuantity<f64> {
+    fn call(&self, conditions: &[DynQuantity<f64>]) -> DynQuantity<f64> {
         let mut flux_density = MagneticFluxDensity::new::<tesla>(0.0);
         let mut frequency = Frequency::new::<hertz>(0.0);
-        for factor in influencing_factors {
+        for factor in conditions {
             if let Ok(fd) = MagneticFluxDensity::try_from(*factor) {
                 flux_density = fd;
             } else if let Ok(f) = Frequency::try_from(*factor) {

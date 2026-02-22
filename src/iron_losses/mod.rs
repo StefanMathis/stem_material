@@ -58,11 +58,11 @@ impl IronLosses {
     Matches against `self` and calculates the iron losses (or just return the
     value in case of the [`IronLosses::Constant`]) variant).
     */
-    pub fn get(&self, influencing_factors: &[DynQuantity<f64>]) -> SpecificPower {
+    pub fn get(&self, conditions: &[DynQuantity<f64>]) -> SpecificPower {
         match self {
             Self::Constant(val) => val.clone(),
-            Self::JordanModel(model) => model.call(influencing_factors).try_into().expect("implementation of JordanModel makes sure the returned value is always a SpecificPower"),
-            Self::Function(fun) => fun.call(influencing_factors),
+            Self::JordanModel(model) => model.call(conditions).try_into().expect("implementation of JordanModel makes sure the returned value is always a SpecificPower"),
+            Self::Function(fun) => fun.call(conditions),
         }
     }
 

@@ -195,11 +195,11 @@ impl RelativePermeability {
     Matches against `self` and calculates the iron losses (or just return the
     value in case of the [`RelativePermeability::Constant`]) variant).
     */
-    pub fn get(&self, influencing_factors: &[DynQuantity<f64>]) -> f64 {
+    pub fn get(&self, conditions: &[DynQuantity<f64>]) -> f64 {
         match self {
             Self::Constant(val) => val.clone(),
-            Self::FerromagneticPermeability(model) => model.call(influencing_factors).try_into().expect("implementation of FerromagneticPermeability makes sure the returned value is always a f64"),
-            Self::Function(fun) => fun.call(influencing_factors),
+            Self::FerromagneticPermeability(model) => model.call(conditions).try_into().expect("implementation of FerromagneticPermeability makes sure the returned value is always a f64"),
+            Self::Function(fun) => fun.call(conditions),
         }
     }
 
@@ -434,8 +434,8 @@ impl FerromagneticPermeability {
 
 #[cfg_attr(feature = "serde", typetag::serde)]
 impl IsQuantityFunction for FerromagneticPermeability {
-    fn call(&self, influencing_factors: &[DynQuantity<f64>]) -> DynQuantity<f64> {
-        for f in influencing_factors {
+    fn call(&self, conditions: &[DynQuantity<f64>]) -> DynQuantity<f64> {
+        for f in conditions {
             if f.unit == Unit::from(PredefUnit::MagneticFieldStrength) {
                 return self
                     .from_field_strength
