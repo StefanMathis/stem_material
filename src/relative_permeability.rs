@@ -55,11 +55,11 @@ insulation.
 "#]
 #![cfg_attr(
     docsrs,
-    doc = "\n\n![](https://raw.githubusercontent.com/StefanMathis/stem_material/refs/heads/main/docs/ferromagnetic_characteristic_mod.svg \"Ferromagnetic characteristic\")"
+    doc = "\n\n![](https://raw.githubusercontent.com/StefanMathis/stem_material/refs/heads/main/docs/relative_permeability.svg \"Ferromagnetic characteristic\")"
 )]
 #![cfg_attr(
     not(docsrs),
-    doc = "\n\n![>> Example image missing, copy folder docs from crate root to doc root folder (where index.html is) to display the image <<](../docs/ferromagnetic_characteristic_mod.svg)"
+    doc = "\n\n![>> Example image missing, copy folder docs from crate root to doc root folder (where index.html is) to display the image <<](../docs/relative_permeability.svg)"
 )]
 
 use std::f64::INFINITY;
