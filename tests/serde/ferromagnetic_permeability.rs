@@ -1,6 +1,9 @@
 use indoc::indoc;
+
+use stem_material::uom::si::f64::*;
+use stem_material::uom::si::magnetic_field_strength::ampere_per_meter;
+use stem_material::uom::si::magnetic_flux_density::tesla;
 use stem_material::*;
-use var_quantity::IsQuantityFunction;
 
 #[test]
 fn test_serialize_and_deserialize_relative_permeability() {

@@ -6,20 +6,17 @@ use serde_mosaic::{
     DatabaseEntry,
     serde::{Deserialize, Serialize},
 };
-use uom::si::specific_power::watt_per_kilogram;
 use var_quantity::VarQuantity;
 
 #[cfg(feature = "serde")]
 use std::ffi::OsStr;
 
 use std::{fmt::Debug, mem};
-pub use uom;
-pub use uom::si::{
-    electrical_resistivity::ohm_meter, f64::*, frequency::hertz, heat_capacity::joule_per_kelvin,
-    magnetic_field_strength::ampere_per_meter, magnetic_flux_density::tesla,
-    magnetic_permeability::henry_per_meter, mass_density::kilogram_per_cubic_meter,
-    specific_heat_capacity::joule_per_kilogram_kelvin, thermal_conductivity::watt_per_meter_kelvin,
-    thermodynamic_temperature::degree_celsius,
+use var_quantity::uom::si::{
+    electrical_resistivity::ohm_meter, f64::*, magnetic_field_strength::ampere_per_meter,
+    magnetic_flux_density::tesla, magnetic_permeability::henry_per_meter,
+    mass_density::kilogram_per_cubic_meter, specific_heat_capacity::joule_per_kilogram_kelvin,
+    specific_power::watt_per_kilogram, thermal_conductivity::watt_per_meter_kelvin,
 };
 
 use crate::iron_losses::*;
@@ -77,7 +74,7 @@ A [`Material`] is used as part of motor components within
 a wire would look like this:
 
 ```rust
-pub use uom::si::f64::*;
+use stem_material::uom::si::f64::*;
 use stem_material::Material;
 
 trait Wire {

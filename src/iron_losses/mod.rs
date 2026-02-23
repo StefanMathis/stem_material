@@ -10,11 +10,10 @@ Additionally, it offers the following predefined iron loss models:
  */
 
 pub mod jordan_model;
-use dyn_quantity::DynQuantity;
 pub use jordan_model::*;
 
-use uom::si::f64::SpecificPower;
-use var_quantity::{IsQuantityFunction, QuantityFunction};
+use var_quantity::uom::si::f64::SpecificPower;
+use var_quantity::{DynQuantity, IsQuantityFunction, QuantityFunction};
 
 #[cfg(feature = "serde")]
 use serde::Serialize;
@@ -79,7 +78,7 @@ impl IronLosses {
 }
 
 impl TryFrom<Box<dyn IsQuantityFunction>> for IronLosses {
-    type Error = dyn_quantity::UnitsNotEqual;
+    type Error = var_quantity::UnitsNotEqual;
 
     fn try_from(value: Box<dyn IsQuantityFunction>) -> Result<Self, Self::Error> {
         let wrapper = QuantityFunction::new(value)?;
@@ -131,8 +130,8 @@ impl<'de> serde::Deserialize<'de> for IronLosses {
     {
         use std::str::FromStr;
 
-        use dyn_quantity::DynQuantity;
         use serde::Deserialize;
+        use var_quantity::DynQuantity;
 
         #[derive(Deserialize)]
         enum PredefinedModels {

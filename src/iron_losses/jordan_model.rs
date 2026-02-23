@@ -59,18 +59,19 @@ use argmin::{
     core::{CostFunction, State},
     solver::neldermead::NelderMead,
 };
-use dyn_quantity::DynQuantity;
+use var_quantity::DynQuantity;
+
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "serde")]
-use dyn_quantity::deserialize_quantity;
+use var_quantity::deserialize_quantity;
 
-use uom::si::{
+use var_quantity::IsQuantityFunction;
+use var_quantity::uom::si::{
     f64::*, frequency::hertz, magnetic_flux_density::tesla, ratio::ratio,
     specific_power::watt_per_kilogram,
 };
-use var_quantity::IsQuantityFunction;
 
 /**
 Implementation of the Jordan iron loss model.
@@ -114,11 +115,11 @@ returned losses are zero as well:
 
 ```
 use stem_material::*;
-use uom::si::specific_power::watt_per_kilogram;
-use uom::si::thermodynamic_temperature::degree_celsius;
-use uom::si::frequency::hertz;
-use uom::si::magnetic_flux_density::tesla;
-use var_quantity::*;
+use stem_material::uom::si::f64::*;
+use stem_material::uom::si::specific_power::watt_per_kilogram;
+use stem_material::uom::si::thermodynamic_temperature::degree_celsius;
+use stem_material::uom::si::frequency::hertz;
+use stem_material::uom::si::magnetic_flux_density::tesla;
 
 let model = JordanModel {
     hysteresis_coefficient: SpecificPower::new::<watt_per_kilogram>(1.0),
@@ -206,7 +207,7 @@ impl JordanModel {
 
     ```
     use stem_material::JordanModel;
-    use uom::si::frequency::hertz;
+    use stem_material::uom::si::frequency::hertz;
 
     assert_eq!(JordanModel::reference_frequency().get::<hertz>(), 50.0);
     ```
@@ -225,7 +226,7 @@ impl JordanModel {
 
     ```
     use stem_material::JordanModel;
-    use uom::si::magnetic_flux_density::tesla;
+    use stem_material::uom::si::magnetic_flux_density::tesla;
 
     assert_eq!(JordanModel::reference_flux_density().get::<tesla>(), 1.50);
     ```
@@ -259,10 +260,11 @@ impl JordanModel {
 
     ```
     use stem_material::*;
-    use uom::si::specific_power::watt_per_kilogram;
-    use uom::si::thermodynamic_temperature::degree_celsius;
-    use uom::si::frequency::hertz;
-    use uom::si::magnetic_flux_density::tesla;
+    use stem_material::uom::si::f64::*;
+    use stem_material::uom::si::specific_power::watt_per_kilogram;
+    use stem_material::uom::si::thermodynamic_temperature::degree_celsius;
+    use stem_material::uom::si::frequency::hertz;
+    use stem_material::uom::si::magnetic_flux_density::tesla;
 
     let model = JordanModel {
         hysteresis_coefficient: SpecificPower::new::<watt_per_kilogram>(1.0),
@@ -411,9 +413,10 @@ impl IronLossData {
 
     ```
     use stem_material::*;
-    use uom::si::specific_power::watt_per_kilogram;
-    use uom::si::frequency::hertz;
-    use uom::si::magnetic_flux_density::tesla;
+    use stem_material::uom::si::f64::*;
+    use stem_material::uom::si::specific_power::watt_per_kilogram;
+    use stem_material::uom::si::frequency::hertz;
+    use stem_material::uom::si::magnetic_flux_density::tesla;
 
     // Expose the get_best_param method
     use argmin::core::State;
@@ -571,9 +574,10 @@ be used to derive the coefficients of the [`JordanModel`].
 
 ```
 use stem_material::*;
-use uom::si::specific_power::watt_per_kilogram;
-use uom::si::frequency::hertz;
-use uom::si::magnetic_flux_density::tesla;
+use stem_material::uom::si::f64::*;
+use stem_material::uom::si::specific_power::watt_per_kilogram;
+use stem_material::uom::si::frequency::hertz;
+use stem_material::uom::si::magnetic_flux_density::tesla;
 
 // These datapoints might come from a manufacturer sheet.
 
@@ -627,10 +631,11 @@ impl IronLossCharacteristic {
 
     /**
     Creates a new [`IronLossCharacteristic`] from its frequency, a slice of
-    flux densities and one of specific losses. Each entry of the
-    `flux_densities` is paired with the same-index entry of `specific_losses`
-    to form a [`FluxDensityLossPair`]. If one slice is longer than the other,
-    the surplus entries are discarded.
+    flux densities and one of specific losses.
+
+    Each entry of the `flux_densities` vector is paired with the same-index
+    entry of `specific_losses` to form a [`FluxDensityLossPair`]. If one slice
+    is longer than the other, the surplus entries are discarded.
      */
     pub fn from_vecs(
         frequency: Frequency,

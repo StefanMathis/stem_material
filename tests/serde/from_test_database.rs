@@ -1,5 +1,11 @@
 use approx;
 use serde_mosaic::{DatabaseManager, SerdeYaml};
+
+use stem_material::uom::si::electrical_resistivity::ohm_meter;
+use stem_material::uom::si::f64::*;
+use stem_material::uom::si::magnetic_flux_density::tesla;
+use stem_material::uom::si::mass_density::kilogram_per_cubic_meter;
+use stem_material::uom::si::thermodynamic_temperature::degree_celsius;
 use stem_material::*;
 
 fn create_dbm() -> DatabaseManager {

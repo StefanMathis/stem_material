@@ -65,20 +65,20 @@ insulation.
 use std::f64::INFINITY;
 
 use akima_spline::AkimaSpline;
-use dyn_quantity::{DynQuantity, PredefUnit, Unit};
-use uom::si::magnetic_field_strength::ampere_per_meter;
-use uom::si::magnetic_flux_density::tesla;
+
+use var_quantity::uom::si::f64::*;
+use var_quantity::uom::si::magnetic_field_strength::ampere_per_meter;
+use var_quantity::uom::si::magnetic_flux_density::tesla;
+use var_quantity::{DynQuantity, PredefUnit, Unit};
 use var_quantity::{IsQuantityFunction, QuantityFunction};
 
 #[cfg(feature = "serde")]
-use dyn_quantity::deserialize_vec_of_quantities;
+use var_quantity::deserialize_vec_of_quantities;
 
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
 use crate::{VACUUM_PERMEABILITY, VACUUM_PERMEABILITY_UNITLESS};
-
-use uom::si::f64::*;
 
 /**
 A specialized variant of [`VarQuantity<f64>`](var_quantity::VarQuantity) for
@@ -216,7 +216,7 @@ impl RelativePermeability {
 }
 
 impl TryFrom<Box<dyn IsQuantityFunction>> for RelativePermeability {
-    type Error = dyn_quantity::UnitsNotEqual;
+    type Error = var_quantity::UnitsNotEqual;
 
     fn try_from(value: Box<dyn IsQuantityFunction>) -> Result<Self, Self::Error> {
         let wrapper = QuantityFunction::new(value)?;
@@ -540,8 +540,9 @@ impl MagnetizationCurve {
 
     ```
     use stem_material::*;
-    use uom::si::magnetic_field_strength::ampere_per_meter;
-    use uom::si::magnetic_flux_density::tesla;
+    use stem_material::uom::si::f64::*;
+    use stem_material::uom::si::magnetic_field_strength::ampere_per_meter;
+    use stem_material::uom::si::magnetic_flux_density::tesla;
 
     // Valid input data
     assert!(MagnetizationCurve::new(
@@ -654,8 +655,9 @@ impl PolarizationCurve {
 
     ```
     use stem_material::*;
-    use uom::si::magnetic_field_strength::ampere_per_meter;
-    use uom::si::magnetic_flux_density::tesla;
+    use stem_material::uom::si::f64::*;
+    use stem_material::uom::si::magnetic_field_strength::ampere_per_meter;
+    use stem_material::uom::si::magnetic_flux_density::tesla;
 
     // Valid input data
     assert!(PolarizationCurve::new(

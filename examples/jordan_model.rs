@@ -1,8 +1,8 @@
 use stem_material::jordan_model::*;
-use uom::si::f64::*;
-use uom::si::frequency::hertz;
-use uom::si::magnetic_flux_density::tesla;
-use uom::si::specific_power::watt_per_kilogram;
+use stem_material::uom::si::f64::*;
+use stem_material::uom::si::frequency::hertz;
+use stem_material::uom::si::magnetic_flux_density::tesla;
+use stem_material::uom::si::specific_power::watt_per_kilogram;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     /*

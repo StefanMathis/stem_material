@@ -1,8 +1,8 @@
+use stem_material::IsQuantityFunction;
 use stem_material::relative_permeability::*;
-use uom::si::f64::*;
-use uom::si::magnetic_field_strength::ampere_per_meter;
-use uom::si::magnetic_flux_density::tesla;
-use var_quantity::IsQuantityFunction;
+use stem_material::uom::si::f64::*;
+use stem_material::uom::si::magnetic_field_strength::ampere_per_meter;
+use stem_material::uom::si::magnetic_flux_density::tesla;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let field_strength: Vec<_> = vec![
