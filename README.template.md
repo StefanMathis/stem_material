@@ -13,6 +13,10 @@ It is used to define motor components within stem - a Simulation Toolbox for
 Electric Motors. See the [stem book](https://stefanmathis.github.io/stem_book/)
 for an introduction to the framework.
 
+> **Feedback welcome!**  
+> Found a bug, missing docs, or have a feature request?  
+> Please open an issue on GitHub.
+
 # Modeling soft magnetism
 
 The following models for soft magnetism can both be used stand-alone and as part
