@@ -307,6 +307,10 @@ impl IsQuantityFunction for JordanModel {
         }
         return self.losses(flux_density, frequency).into();
     }
+
+    fn dyn_eq(&self, other: &dyn IsQuantityFunction) -> bool {
+        (other as &dyn std::any::Any).downcast_ref::<Self>() == Some(self)
+    }
 }
 
 /**

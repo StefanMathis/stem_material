@@ -104,7 +104,7 @@ implements [`DatabaseEntry`] which is very useful when maintaining e.g. a
 database of motors: Commonly used materials such as copper for the wire only
 need to be defined once and can then be reused across all motors.
 */
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "serde", serde(deny_unknown_fields))]
 pub struct Material {

@@ -93,7 +93,7 @@ drastically, since no dynamic dispatch is needed. Nevertheless, user-defined
 permeability models are still supported via the
 [`RelativePermeability::Function`] variant.
  */
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum RelativePermeability {
     /**
     Optimization for the common case of a constant quantity. This avoids going
@@ -284,7 +284,7 @@ directly and then the constructors
 [`from_polarization`](FerromagneticPermeability::from_polarization) are used to
 create a [`FerromagneticPermeability`] instance.
  */
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(
     feature = "serde",
@@ -451,6 +451,10 @@ impl IsQuantityFunction for FerromagneticPermeability {
             }
         }
         return self.from_flux_density.eval_infallible(0.0).into();
+    }
+
+    fn dyn_eq(&self, other: &dyn IsQuantityFunction) -> bool {
+        (other as &dyn std::any::Any).downcast_ref::<Self>() == Some(self)
     }
 }
 

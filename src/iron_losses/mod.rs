@@ -30,7 +30,7 @@ performance drastically, since no dynamic dispatch is needed when using these
 models. Nevertheless, user-defined iron loss models are still supported via
 the [`IronLosses::Function`] variant.
  */
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum IronLosses {
     /**
     Optimization for the common case of a constant quantity. This avoids going
