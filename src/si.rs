@@ -30,6 +30,7 @@ use stem_material::prelude::si::temperature_interval::kelvin;
 // Quantities
 pub use var_quantity::uom::si;
 pub use var_quantity::uom::si::f64::*;
+pub use var_quantity::uom::si::ratio::ratio;
 
 // Length and mass
 pub use var_quantity::uom::si::area::{
