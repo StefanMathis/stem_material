@@ -1,10 +1,10 @@
 stem_material
 =============
 
-[`Material`]: https://docs.rs/stem_material/0.3.1/stem_material/material/struct.Material.html
-[`FerromagneticPermeability`]: https://docs.rs/stem_material/0.3.1/stem_material/relative_permeability/struct.FerromagneticPermeability.html
-[`JordanModel`]: https://docs.rs/stem_material/0.3.1/stem_material/iron_losses/jordan_model/struct.JordanModel.html
-[module]: https://docs.rs/stem_material/0.3.1/stem_material/iron_losses/jordan_model/
+[`Material`]: https://docs.rs/stem_material/0.3.2/stem_material/material/struct.Material.html
+[`FerromagneticPermeability`]: https://docs.rs/stem_material/0.3.2/stem_material/relative_permeability/struct.FerromagneticPermeability.html
+[`JordanModel`]: https://docs.rs/stem_material/0.3.2/stem_material/iron_losses/jordan_model/struct.JordanModel.html
+[module]: https://docs.rs/stem_material/0.3.2/stem_material/iron_losses/jordan_model/
 [var_quantity]: https://crates.io/crates/var_quantity
 
 This crate provides a [`Material`] definition for simulation of electromagnetic
@@ -67,7 +67,7 @@ deserialization. See the docstrings of the individual types for details.
 # Documentation
 
 The full API documentation is available at
-[https://docs.rs/stem_material/0.3.1/stem_material/](https://docs.rs/stem_material/0.3.1/stem_material/).
+[https://docs.rs/stem_material/0.3.2/stem_material/](https://docs.rs/stem_material/0.3.2/stem_material/).
 
 The doc images are created by a second crate located within its repository 
 (`docs/create_doc_images`) which uses this crate and the awesome

@@ -42,6 +42,7 @@ pub use var_quantity::uom::si::mass_density::{
     gram_per_cubic_meter, kilogram_per_cubic_meter, microgram_per_cubic_meter,
     milligram_per_cubic_meter, ton_per_cubic_meter,
 };
+pub use var_quantity::uom::si::moment_of_inertia::kilogram_square_meter;
 pub use var_quantity::uom::si::specific_volume::{
     cubic_centimeter_per_gram, cubic_meter_per_gram, cubic_meter_per_kilogram,
 };
@@ -54,6 +55,28 @@ pub use var_quantity::uom::si::frequency::{
     gigahertz, hertz, kilohertz, megahertz, microhertz, millihertz,
 };
 pub use var_quantity::uom::si::time::{day, hour, microsecond, millisecond, minute, second, year};
+
+// Velocity and acceleration
+pub use var_quantity::uom::si::acceleration::{
+    centimeter_per_second_squared, kilometer_per_second_squared, meter_per_second_squared,
+    millimeter_per_minute_squared, millimeter_per_second_squared, standard_gravity,
+};
+pub use var_quantity::uom::si::angular_acceleration::radian_per_second_squared;
+pub use var_quantity::uom::si::angular_velocity::{
+    radian_per_second, revolution_per_hour, revolution_per_minute, revolution_per_second,
+};
+pub use var_quantity::uom::si::velocity::{
+    centimeter_per_second, kilometer_per_hour, kilometer_per_second, meter_per_second,
+    micrometer_per_second, millimeter_per_minute, millimeter_per_second,
+};
+
+// Force and torque
+pub use var_quantity::uom::si::force::{
+    giganewton, kilonewton, meganewton, micronewton, millinewton, newton,
+};
+pub use var_quantity::uom::si::torque::{
+    newton_centimeter, newton_kilometer, newton_meter, newton_micrometer, newton_millimeter,
+};
 
 // Power and energy
 pub use var_quantity::uom::si::energy::{
