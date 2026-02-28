@@ -4,9 +4,9 @@ This crate creates the images used in the documentation of the stem_material cra
 use plotters::element::DashedPathElement;
 use plotters::prelude::*;
 use plotters::style::full_palette::GREEN_800;
+use stem_material::prelude::*;
 use stem_material::uom::si::f64::*;
 use stem_material::uom::si::specific_power::watt_per_kilogram;
-use stem_material::*;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     plot_ferromagnetic_permeability()?;

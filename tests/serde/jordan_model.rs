@@ -1,10 +1,5 @@
 use indoc::indoc;
-use stem_material::uom::si::f64::*;
-use stem_material::uom::si::magnetic_field_strength::ampere_per_meter;
-use stem_material::uom::si::magnetic_flux_density::tesla;
-use stem_material::uom::si::mass_density::kilogram_per_cubic_meter;
-use stem_material::uom::si::specific_power::watt_per_kilogram;
-use stem_material::*;
+use stem_material::prelude::*;
 
 #[test]
 fn test_serialize_and_deserialize_iron_losses() {

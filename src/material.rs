@@ -74,8 +74,7 @@ A [`Material`] is used as part of motor components within
 a wire would look like this:
 
 ```rust
-use stem_material::uom::si::f64::*;
-use stem_material::Material;
+use stem_material::prelude::*;
 
 trait Wire {
     fn resistance(&self, temperature: ThermodynamicTemperature) -> ElectricalResistance;

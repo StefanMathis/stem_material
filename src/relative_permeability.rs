@@ -78,7 +78,7 @@ use var_quantity::deserialize_vec_of_quantities;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
-use crate::{VACUUM_PERMEABILITY, VACUUM_PERMEABILITY_UNITLESS};
+use crate::material::{VACUUM_PERMEABILITY, VACUUM_PERMEABILITY_UNITLESS};
 
 /**
 A specialized variant of [`VarQuantity<f64>`](var_quantity::VarQuantity) for
@@ -543,10 +543,7 @@ impl MagnetizationCurve {
     # Examples
 
     ```
-    use stem_material::*;
-    use stem_material::uom::si::f64::*;
-    use stem_material::uom::si::magnetic_field_strength::ampere_per_meter;
-    use stem_material::uom::si::magnetic_flux_density::tesla;
+    use stem_material::prelude::*;
 
     // Valid input data
     assert!(MagnetizationCurve::new(
@@ -658,10 +655,7 @@ impl PolarizationCurve {
     # Examples
 
     ```
-    use stem_material::*;
-    use stem_material::uom::si::f64::*;
-    use stem_material::uom::si::magnetic_field_strength::ampere_per_meter;
-    use stem_material::uom::si::magnetic_flux_density::tesla;
+    use stem_material::prelude::*;
 
     // Valid input data
     assert!(PolarizationCurve::new(

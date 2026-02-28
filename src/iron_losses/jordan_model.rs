@@ -114,12 +114,7 @@ If either one cannot be found, a value of zero is assumed, which means that the
 returned losses are zero as well:
 
 ```
-use stem_material::*;
-use stem_material::uom::si::f64::*;
-use stem_material::uom::si::specific_power::watt_per_kilogram;
-use stem_material::uom::si::thermodynamic_temperature::degree_celsius;
-use stem_material::uom::si::frequency::hertz;
-use stem_material::uom::si::magnetic_flux_density::tesla;
+use stem_material::prelude::*;
 
 let model = JordanModel {
     hysteresis_coefficient: SpecificPower::new::<watt_per_kilogram>(1.0),
@@ -206,8 +201,7 @@ impl JordanModel {
     # Examples
 
     ```
-    use stem_material::JordanModel;
-    use stem_material::uom::si::frequency::hertz;
+    use stem_material::prelude::*;
 
     assert_eq!(JordanModel::reference_frequency().get::<hertz>(), 50.0);
     ```
@@ -225,8 +219,7 @@ impl JordanModel {
     # Examples
 
     ```
-    use stem_material::JordanModel;
-    use stem_material::uom::si::magnetic_flux_density::tesla;
+    use stem_material::prelude::*;
 
     assert_eq!(JordanModel::reference_flux_density().get::<tesla>(), 1.50);
     ```
@@ -259,12 +252,7 @@ impl JordanModel {
     # Examples
 
     ```
-    use stem_material::*;
-    use stem_material::uom::si::f64::*;
-    use stem_material::uom::si::specific_power::watt_per_kilogram;
-    use stem_material::uom::si::thermodynamic_temperature::degree_celsius;
-    use stem_material::uom::si::frequency::hertz;
-    use stem_material::uom::si::magnetic_flux_density::tesla;
+    use stem_material::prelude::*;
 
     let model = JordanModel {
         hysteresis_coefficient: SpecificPower::new::<watt_per_kilogram>(1.0),
@@ -416,11 +404,7 @@ impl IronLossData {
     # Examples
 
     ```
-    use stem_material::*;
-    use stem_material::uom::si::f64::*;
-    use stem_material::uom::si::specific_power::watt_per_kilogram;
-    use stem_material::uom::si::frequency::hertz;
-    use stem_material::uom::si::magnetic_flux_density::tesla;
+    use stem_material::prelude::*;
 
     // Expose the get_best_param method
     use argmin::core::State;
@@ -577,11 +561,7 @@ be used to derive the coefficients of the [`JordanModel`].
 # Examples
 
 ```
-use stem_material::*;
-use stem_material::uom::si::f64::*;
-use stem_material::uom::si::specific_power::watt_per_kilogram;
-use stem_material::uom::si::frequency::hertz;
-use stem_material::uom::si::magnetic_flux_density::tesla;
+use stem_material::prelude::*;
 
 // These datapoints might come from a manufacturer sheet.
 

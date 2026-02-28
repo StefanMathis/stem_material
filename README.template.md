@@ -68,3 +68,9 @@ deserialization. See the docstrings of the individual types for details.
 
 The full API documentation is available at
 [https://docs.rs/stem_material/{{VERSION}}/stem_material/](https://docs.rs/stem_material/{{VERSION}}/stem_material/).
+
+The doc images are created by a second crate located within its repository 
+(`docs/create_doc_images`) which uses this crate and the awesome
+[plotters](https://crates.io/crates/plotters) crate.
+The images shown in this documentation can be created with `cargo run` from
+within `docs/create_doc_images`.

@@ -1,7 +1,5 @@
-use stem_material::unary::Linear;
-use stem_material::uom::si::f64::MagneticFieldStrength;
-use stem_material::uom::si::magnetic_field_strength::ampere_per_meter;
-use stem_material::*;
+use stem_material::prelude::unary::Linear;
+use stem_material::prelude::*;
 
 #[test]
 fn test_eq() {
