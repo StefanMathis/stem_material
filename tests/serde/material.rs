@@ -202,3 +202,26 @@ fn test_deserialize_material() {
         panic!("wrong model");
     }
 }
+
+#[test]
+fn test_serialize_and_deserialize_with_units() {
+    let material = Material::default();
+    let expected = indoc::indoc! {"
+        ---
+        name: default_name
+        relative_permeability: 1.0
+        iron_losses: 0 s^-3 m^2
+        remanence: 0 s^-2 kg A^-1
+        intrinsic_coercivity: 0 m^-1 A
+        electrical_resistivity: inf s^-3 m^3 kg A^-2
+        mass_density: 1000 m^-3 kg
+        heat_capacity: 0 s^-2 m^2 K^-1
+        thermal_conductivity: 0 s^-3 m kg K^-1
+        "};
+    let actual =
+        serialize_with_units(|| serde_yaml::to_string(&material)).expect("serialization succeeds");
+    assert_eq!(expected, actual);
+
+    let de_material: Material = serde_yaml::from_str(&actual).expect("deserialization succeeds");
+    assert_eq!(material, de_material);
+}

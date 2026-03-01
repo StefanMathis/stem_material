@@ -15,9 +15,6 @@ pub use jordan_model::*;
 use var_quantity::uom::si::f64::SpecificPower;
 use var_quantity::{DynQuantity, IsQuantityFunction, QuantityFunction};
 
-#[cfg(feature = "serde")]
-use serde::Serialize;
-
 /**
 A specialized variant of
 [`VarQuantity<SpecificPower>`](var_quantity::VarQuantity) for iron losses.
@@ -98,6 +95,9 @@ impl serde::Serialize for IronLosses {
     where
         S: serde::Serializer,
     {
+        use serde::Serialize;
+        use var_quantity::serialize_quantity;
+
         #[derive(Serialize)]
         enum PredefinedModels<'a> {
             JordanModel(&'a JordanModel),
@@ -106,6 +106,7 @@ impl serde::Serialize for IronLosses {
         #[derive(Serialize)]
         #[serde(untagged)]
         enum IronLossesSerde<'a> {
+            #[serde(serialize_with = "serialize_quantity")]
             Constant(SpecificPower),
             PredefinedModels(PredefinedModels<'a>),
             Function(&'a QuantityFunction<SpecificPower>),

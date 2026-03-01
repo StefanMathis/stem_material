@@ -1,6 +1,6 @@
 [package]
 name = "stem_material"
-version = "0.3.2"
+version = "0.3.3"
 edition = "2024"
 description = "Material definition for stem - a Simulation Toolbox for Electric Motors."
 readme = "README.md"
@@ -14,7 +14,7 @@ path = "src/lib.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-var_quantity = { version = "0.3.0" }
+var_quantity = { version = "0.3.3" }
 akima_spline = { version = "0.1.5" }
 argmin = { version = "0.11", default-features = false }
 argmin-math = "0.5" # Explicit dependency is necessary for implementation of ArgminAdd
