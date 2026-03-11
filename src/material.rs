@@ -30,7 +30,7 @@ the new definition of the ampere, the vacuum magnetic permeability is actually
 4π * 0.99999999987(16) * 1e-7 H/m. This deviation is within the measurement
 uncertainty and cannot be reasonably be represented by [`f64`] anyway
 Therefore, the stem framework still uses the old definition.
-See [https://en.wikipedia.org/wiki/Vacuum_permeability].
+See <https://en.wikipedia.org/wiki/Vacuum_permeability>.
  */
 pub const VACUUM_PERMEABILITY_UNITLESS: f64 = 4.0 * std::f64::consts::PI * 1e-7;
 
@@ -52,13 +52,13 @@ A substance which constitutes an object, e.g. a magnet or a wire in
 This struct is literally just the sum of its parts: It represents a material as
 a collection of properties such as its mass density, electrical resistivity or
 heat capacity. Each of its fields can be accessed directly or via its getter
-and setter methods. Since all fields are defined using the [uom] crate, the
-type system ensures that the output value is always given in SI units. Every
-property is thought to be homogeneous (e.g. does not change depending on the
-orientation of the material) unless explicitly stated otherwise in the field
-description. All property fields use the [`VarQuantity`] enum which can
-represent the change of properties due to external factors (e.g. the increase of
-electrical resistivity with temperature).
+and setter methods. Since all fields are defined using the
+[uom](crate::var_quantity::uom) crate, the type system ensures that the output
+value is always given in SI units. Every property is assumed to be homogeneous
+(e.g. does not change depending on the orientation of the material) unless
+explicitly stated otherwise in the field description. All property fields use
+the [`VarQuantity`] enum which can represent the change of properties due to
+external factors (e.g. the increase of electrical resistivity with temperature).
 
 It is important to note that the material should always return reasonable values
 for physical properties, otherwise calculations might return non-physical

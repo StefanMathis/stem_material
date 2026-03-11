@@ -1,26 +1,4 @@
-use std::{fs, path::Path};
-
-struct Image {
-    placeholder: String,
-    filename: String,
-    remote_url: String,
-}
-
-impl Image {
-    fn new(filename: &str) -> Self {
-        let placeholder = format!("{{{{{}}}}}", filename); // e.g., "{{relative_permeability.svg}}"
-        let remote_url = format!(
-            "https://raw.githubusercontent.com/StefanMathis/stem_material/refs/heads/main/docs/{}",
-            filename
-        );
-
-        Self {
-            placeholder,
-            filename: filename.to_string(),
-            remote_url,
-        }
-    }
-}
+use std::fs;
 
 fn main() {
     // Skip README generation on docs.rs
@@ -28,39 +6,34 @@ fn main() {
         return;
     }
 
-    let readme_template =
-        fs::read_to_string("README.template.md").expect("Failed to read README template");
+    /*
+    Compose README.md from the building blocks in docs/readme_parts,
+    interleaving image links in between. Finally, all {{VERSION}} placeholders
+    are replaced by the actual version read from Cargo.toml.
+     */
 
-    let versioned_readme = readme_template.replace(
+    let mut readme =
+        fs::read_to_string("docs/readme_parts/links.md").expect("Failed to read template");
+    readme.push('\n');
+    readme.push_str(
+        &fs::read_to_string("docs/readme_parts/relative_permeability.svg.md")
+            .expect("Failed to read template"),
+    );
+    readme.push_str("\n\n![](https://raw.githubusercontent.com/StefanMathis/stem_material/refs/heads/main/docs/img/relative_permeability.svg \"Relative permeability\")\n\n");
+
+    readme.push_str(
+        &fs::read_to_string("docs/readme_parts/jordan_model.svg.md")
+            .expect("Failed to read template"),
+    );
+    readme.push_str("\n\n![](https://raw.githubusercontent.com/StefanMathis/stem_material/refs/heads/main/docs/img/jordan_model.svg \"Jordan model\")\n\n");
+
+    readme.push_str(
+        &fs::read_to_string("docs/readme_parts/end.md").expect("Failed to read template"),
+    );
+
+    let readme = readme.replace(
         "{{VERSION}}",
         &std::env::var("CARGO_PKG_VERSION").expect("version is available in build.rs"),
     );
-
-    let images = [
-        Image::new("relative_permeability.svg"),
-        Image::new("jordan_model.svg"),
-    ];
-
-    let out_dir = std::env::var("CARGO_MANIFEST_DIR").expect("manifest is available in build.rs");
-    let doc_dir = format!("{}/target/doc/stem_material", out_dir);
-    let _ = fs::create_dir_all(&doc_dir);
-
-    // Generate README_local.md
-    let mut local_readme = versioned_readme.clone();
-    for img in &images {
-        let local_path = format!("docs/{}", img.filename);
-        local_readme = local_readme.replace(&img.placeholder, &local_path);
-
-        let img_src = Path::new(&out_dir).join(&local_path);
-        let img_dst = Path::new(&doc_dir).join(&local_path);
-        let _ = fs::copy(img_src, img_dst);
-    }
-    let _ = fs::write("README_local.md", local_readme);
-
-    // Generate README.md for docs.rs with remote images
-    let mut docsrs_readme = versioned_readme.clone();
-    for img in &images {
-        docsrs_readme = docsrs_readme.replace(&img.placeholder, &img.remote_url);
-    }
-    let _ = fs::write("README.md", docsrs_readme);
+    let _ = fs::write("README.md", readme);
 }

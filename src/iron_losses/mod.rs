@@ -43,8 +43,8 @@ pub enum IronLosses {
     /**
     Catch-all variant for any non-constant behaviour. Arbitrary behaviour
     can be realized with the contained [`IsQuantityFunction`] trait object, as
-    long as the unit constraint outlined in the [`VarQuantity`] docstring is
-    upheld.
+    long as the unit constraint outlined in the
+    [`VarQuantity`](var_quantity::VarQuantity) docstring is upheld.
      */
     Function(QuantityFunction<SpecificPower>),
 }

@@ -9,13 +9,14 @@ hysteresis losses and dynamic eddy current losses via the following formula:
 
 where `f` is the frequency and `B` is the amplitude of the flux density. The
 hysteresis loss factor `kh` and the eddy current loss factor `kec` are derived
-by fitting measured loss curves. See [[1]] and [[2]] for more.
+by fitting measured loss curves. See \[1\] and \[2\] for more.
 
 This module offers the [`JordanModel`] struct, a simple container for the two
 loss coefficients which provides the formula given above via its
 [`JordanModel::losses`] method. The struct implements [`IsQuantityFunction`] and
-can therefore be used as the [iron loss model](crate::Material::iron_losses) of
-a [`Material`](crate::Material).
+can therefore be used as the
+[iron loss model](crate::material::Material::iron_losses) of a
+[`Material`](crate::material::Material).
 
 The coefficients can be obtained from measured loss curves by constructing an
 [`IronLossData`] instance out of them and then fallibly converting it via
@@ -34,24 +35,26 @@ The image below shows a comparison between raw loss data and the fitted
 the loss behaviour at lower frequencies very well, it fails at higher
 frequencies for this particular set of data points.
 
+![Jordan model][jordan_model]
+
 "#]
+#![cfg_attr(feature = "doc-images",
+cfg_attr(all(),
+doc = ::embed_doc_image::embed_image!("jordan_model", "docs/img/jordan_model.svg"),
+))]
 #![cfg_attr(
-    docsrs,
-    doc = "\n\n![](https://raw.githubusercontent.com/StefanMathis/stem_material/refs/heads/main/docs/jordan_model.svg \"Ferromagnetic characteristic\")"
-)]
-#![cfg_attr(
-    not(docsrs),
-    doc = "\n\n![>> Example image missing, copy folder docs from crate root to doc root folder (where index.html is) to display the image <<](../docs/jordan_model.svg)"
+    not(feature = "doc-images"),
+    doc = "**Doc images not enabled**. Compile docs with `cargo doc --features 'doc-images'` and Rust version >= 1.54."
 )]
 #![doc = r#"
 
 # Literature
 
-> [[1]] Krings, A. and Soulard, J.: Overview and comparison of iron loss models
+> \[1\] Krings, A. and Soulard, J.: Overview and comparison of iron loss models
 for electrical machines. EVRE Monaco, March 2010. URL:
-https://www.researchgate.net/profile/Andreas-Krings/publication/228490936_Overview_and_Comparison_of_Iron_Loss_Models_for_Electrical_Machines/links/02e7e51935e2728dda000000/Overview-and-Comparison-of-Iron-Loss-Models-for-Electrical-Machines.pdf
+<https://www.researchgate.net/profile/Andreas-Krings/publication/228490936_Overview_and_Comparison_of_Iron_Loss_Models_for_Electrical_Machines/links/02e7e51935e2728dda000000/Overview-and-Comparison-of-Iron-Loss-Models-for-Electrical-Machines.pdf>
 
-> [[2]] Graham, C. D.: Physical origin of losses in conducting ferromagnetic
+> \[2\] Graham, C. D.: Physical origin of losses in conducting ferromagnetic
 materials. Journal of Applied Physics, vol. 53, no. 11, pp. 8276-8280, Nov.1982
 "#]
 
@@ -76,9 +79,10 @@ use var_quantity::uom::si::{
 /**
 Implementation of the Jordan iron loss model.
 
-As discussed in the [crate-level documentation](crate::jordan_model), this
-struct contains the hysteresis and eddy current loss coefficients of the Jordan
-iron loss model:
+As discussed in the
+[module-level documentation](crate::iron_losses::jordan_model), this struct
+contains the hysteresis and eddy current loss coefficients of the Jordan iron
+loss model:
 
 `p = kh * f * B² + kec * (f * B)²`.
 
@@ -89,7 +93,7 @@ formula, dividing input flux density by 1.5 (see
 [`JordanModel::reference_flux_density`]) and frequency by 50 (see
 [`JordanModel::reference_frequency`]).
 These normalization factors correspond to those usually used in literature, see
-e.g. eq. (6.4.10) and (6.4.11) in [[1]].
+e.g. eq. (6.4.10) and (6.4.11) in \[1]\.
 
 # Constructing a Jordan loss model
 
@@ -106,12 +110,12 @@ to find the coefficients which match the given curves the best. See
 # Usage in `Material`
 
 This struct is meant to be used for the
-[`Material::iron_losses`](crate::Material::iron_losses), hence it implements
-[`IsQuantityFunction`]. Inside the [`IsQuantityFunction::call`] function, the
-input conditions are searched for an entry whose unit corresponds to that of
-the magnetic flux density and another one which matches that of the frequency.
-If either one cannot be found, a value of zero is assumed, which means that the
-returned losses are zero as well:
+[`Material::iron_losses`](crate::material::Material::iron_losses), hence it
+implements [`IsQuantityFunction`]. Inside the [`IsQuantityFunction::call`]
+function, the input conditions are searched for an entry whose unit corresponds
+to that of the magnetic flux density and another one which matches that of the
+frequency. If either one cannot be found, a value of zero is assumed, which
+means that the returned losses are zero as well:
 
 ```
 use stem_material::prelude::*;
@@ -163,7 +167,7 @@ of the latter.
 
 # Literature
 
-> [[1]] Müller, G., Vogt, K. and Ponick, B.: Berechnung elektrischer Maschinen,
+> \[1\] Müller, G., Vogt, K. and Ponick, B.: Berechnung elektrischer Maschinen,
 6th edition, Wiley-VCH, 2008.
  */
 #[derive(Debug, Clone, PartialEq)]

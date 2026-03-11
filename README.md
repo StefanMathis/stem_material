@@ -1,10 +1,10 @@
 stem_material
 =============
 
-[`Material`]: https://docs.rs/stem_material/0.3.3/stem_material/material/struct.Material.html
-[`FerromagneticPermeability`]: https://docs.rs/stem_material/0.3.3/stem_material/relative_permeability/struct.FerromagneticPermeability.html
-[`JordanModel`]: https://docs.rs/stem_material/0.3.3/stem_material/iron_losses/jordan_model/struct.JordanModel.html
-[module]: https://docs.rs/stem_material/0.3.3/stem_material/iron_losses/jordan_model/
+[`Material`]: https://docs.rs/stem_material/0.3.4/stem_material/material/struct.Material.html
+[`FerromagneticPermeability`]: https://docs.rs/stem_material/0.3.4/stem_material/relative_permeability/struct.FerromagneticPermeability.html
+[`JordanModel`]: https://docs.rs/stem_material/0.3.4/stem_material/iron_losses/jordan_model/struct.JordanModel.html
+[module]: https://docs.rs/stem_material/0.3.4/stem_material/iron_losses/jordan_model/
 [var_quantity]: https://crates.io/crates/var_quantity
 
 This crate provides a [`Material`] definition for simulation of electromagnetic
@@ -39,7 +39,7 @@ The following image shows the (modified) spline derived from raw data both for
 an iron fill factor of 100 % and of 95 % (the other 5 % are modeled as air with
 a relative permeability of 1).
 
-![](https://raw.githubusercontent.com/StefanMathis/stem_material/refs/heads/main/docs/relative_permeability.svg "Relative permeability")
+![](https://raw.githubusercontent.com/StefanMathis/stem_material/refs/heads/main/docs/img/relative_permeability.svg "Relative permeability")
 
 ## Jordan model for iron losse
 
@@ -55,7 +55,7 @@ interpolated curves created by the according [`JordanModel`]. It can be clearly
 seen that the model precision is very good for small frequencies, but degrades
 for higher frequencies.
 
-![](https://raw.githubusercontent.com/StefanMathis/stem_material/refs/heads/main/docs/jordan_model.svg "Jordan model")
+![](https://raw.githubusercontent.com/StefanMathis/stem_material/refs/heads/main/docs/img/jordan_model.svg "Jordan model")
 
 # Serialization and deserialization
 
@@ -65,9 +65,6 @@ Most of the types (except errors) in this crate implement serialization and
 deserialization. See the docstrings of the individual types for details.
 
 # Documentation
-
-The full API documentation is available at
-[https://docs.rs/stem_material/0.3.3/stem_material/](https://docs.rs/stem_material/0.3.3/stem_material/).
 
 The doc images are created by a second crate located within its repository 
 (`docs/create_doc_images`) which uses this crate and the awesome

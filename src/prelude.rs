@@ -2,7 +2,7 @@
 This module reexports all types needed to use stem_material - both those defined
 within this crate as well as those in the [si](crate::si) module. The intention
 is that one can include use `stem_material::prelude::*` to work efficiently with
-this crate
+this crate.
  */
 
 pub use crate::iron_losses::*;

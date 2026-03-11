@@ -44,22 +44,25 @@ Measurement data from manufacturers usually refers to the permeability of a
 massive block of material. However, the cores of electric machines are usually
 made from laminated sheets. The glue and insulation usually accounts for 2 % to
 8 % of the sheet thickness and reduces the permeability of the lamination stack
-(since its relative permeability is around 1). The fields
-[`MagnetizationCurve::iron_fill_factor`] and
-[`PolarizationCurve::iron_fill_factor`] can be used to model that reduction.
+(since its relative permeability is around 1). The constructor argument
+`iron_fill_factor` (see [`MagnetizationCurve::new`] /
+[`PolarizationCurve::new`] can be used to model that reduction.
 
 In the image below, the modifications (1) and (2) are clearly visible.
 Additionally, it shows the comparison between an iron fill factor of 100 %
 (massive material) and a typical lamination ratio of 95 % iron, 5 % glue and
 insulation.
+
+![Relative permeability][relative_permeability]
+
 "#]
+#![cfg_attr(feature = "doc-images",
+cfg_attr(all(),
+doc = ::embed_doc_image::embed_image!("relative_permeability", "docs/img/relative_permeability.svg"),
+))]
 #![cfg_attr(
-    docsrs,
-    doc = "\n\n![](https://raw.githubusercontent.com/StefanMathis/stem_material/refs/heads/main/docs/relative_permeability.svg \"Ferromagnetic characteristic\")"
-)]
-#![cfg_attr(
-    not(docsrs),
-    doc = "\n\n![>> Example image missing, copy folder docs from crate root to doc root folder (where index.html is) to display the image <<](../docs/relative_permeability.svg)"
+    not(feature = "doc-images"),
+    doc = "**Doc images not enabled**. Compile docs with `cargo doc --features 'doc-images'` and Rust version >= 1.54."
 )]
 
 use std::f64::INFINITY;
@@ -109,8 +112,8 @@ pub enum RelativePermeability {
     /**
     Catch-all variant for any non-constant behaviour. Arbitrary behaviour
     can be realized with the contained [`IsQuantityFunction`] trait object, as
-    long as the unit constraint outlined in the [`VarQuantity`] docstring is
-    upheld.
+    long as the unit constraint outlined in the
+    [`VarQuantity`](var_quantity::VarQuantity) docstring is upheld.
      */
     Function(QuantityFunction<f64>),
 }
@@ -246,7 +249,7 @@ In this struct, the two functions `µr(B)` and `µr(H)` are represented via two
 [`AkimaSpline`]s which are constructed from the datapoints of a
 [`MagnetizationCurve`] or a [`PolarizationCurve`]. To optimize these splines for
 numerical operations, they are modified according to the
-[module-level documentation](crate::ferromagnetic_permeability).
+[module-level documentation](crate::relative_permeability).
 
 # Constructing a relative permeability curve
 
@@ -260,7 +263,7 @@ to build the struct directly from its fields using manually created splines.
 # Usage in `Material`
 
 This struct is meant to be used for the
-[`Material::relative_permeability`](crate::Material::relative_permeability),
+[`Material::relative_permeability`](crate::material::Material::relative_permeability),
 hence it implements [`IsQuantityFunction`]. Inside the
 [`IsQuantityFunction::call`] function, the input conditions are searched for an
 entry whose unit corresponds to that of the magnetic field strength or flux
