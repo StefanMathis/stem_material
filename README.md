@@ -7,15 +7,21 @@ stem_material
 [module]: https://docs.rs/stem_material/0.3.4/stem_material/iron_losses/jordan_model/
 [var_quantity]: https://crates.io/crates/var_quantity
 
+[![Documentation](https://docs.rs/stem_material/badge.svg)](https://docs.rs/stem_material)
+
+Material definition for stem - a Simulation Toolbox for Electric Motors.
+
+The full API documentation is available at https://docs.rs/stem_material/0.3.4/stem_material.
+
+> **Feedback welcome!**  
+> Found a bug, missing docs, or have a feature request?  
+> Please open an issue on GitHub.
+
 This crate provides a [`Material`] definition for simulation of electromagnetic
 devices – especially electric motors – built on top of the [var_quantity] crate.
 It is used to define motor components within stem - a Simulation Toolbox for
 Electric Motors. See the [stem book](https://stefanmathis.github.io/stem_book/)
 for an introduction to the framework.
-
-> **Feedback welcome!**  
-> Found a bug, missing docs, or have a feature request?  
-> Please open an issue on GitHub.
 
 # Modeling soft magnetism
 
