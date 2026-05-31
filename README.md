@@ -53,7 +53,7 @@ a relative permeability of 1).
 
 ![Relative permeability][relative_permeability.svg]
 
-## Jordan model for iron losse
+## Jordan model for iron losses
 
 The [`JordanModel`] type provides a simple and fast model for calculating
 hysteresis and eddy current losses based on the equation
