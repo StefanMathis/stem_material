@@ -125,24 +125,17 @@ impl serde::Serialize for RelativePermeability {
         S: serde::Serializer,
     {
         #[derive(Serialize)]
-        enum FerromagneticPermeabilityEnum<'a> {
-            FerromagneticPermeability(&'a FerromagneticPermeability),
-        }
-
-        #[derive(Serialize)]
         #[serde(untagged)]
         enum RelativePermeabilitySerde<'a> {
             Constant(f64),
-            FerromagneticPermeabilityEnum(FerromagneticPermeabilityEnum<'a>),
+            FerromagneticPermeability(&'a FerromagneticPermeability),
             Function(&'a QuantityFunction<f64>),
         }
 
         let rp = match self {
             RelativePermeability::Constant(v) => RelativePermeabilitySerde::Constant(*v),
             RelativePermeability::FerromagneticPermeability(fp) => {
-                RelativePermeabilitySerde::FerromagneticPermeabilityEnum(
-                    FerromagneticPermeabilityEnum::FerromagneticPermeability(fp),
-                )
+                RelativePermeabilitySerde::FerromagneticPermeability(fp)
             }
             RelativePermeability::Function(quantity_function) => {
                 RelativePermeabilitySerde::Function(quantity_function)
@@ -158,33 +151,38 @@ impl<'de> serde::Deserialize<'de> for RelativePermeability {
     where
         D: serde::Deserializer<'de>,
     {
-        use serde::Deserialize;
-
-        /**
-        This is a "fake" enum which just exists so the tag
-        "FerromagneticPermeability" is deserialized correctly into [`RelativePermeability::FerromagneticPermeability`] instead of
-        [`RelativePermeability::Function`].
-         */
-        #[derive(Deserialize)]
-        enum FerromagneticPermeabilityEnum {
-            FerromagneticPermeability(FerromagneticPermeability),
-        }
-
         #[derive(deserialize_untagged_verbose_error::DeserializeUntaggedVerboseError)]
         enum RelativePermeabilitySerde {
             Constant(f64),
-            FerromagneticPermeabilityEnum(FerromagneticPermeabilityEnum),
+            FerromagneticPermeability(serde_impl::FerromagneticPermeabilityDeserializeAlias),
+            MagnetizationCurve(MagnetizationCurve),
+            PolarizationCurve(PolarizationCurve),
             Function(QuantityFunction<f64>),
         }
 
         let rp_de = RelativePermeabilitySerde::deserialize(deserializer)?;
         let rp = match rp_de {
             RelativePermeabilitySerde::Constant(v) => RelativePermeability::Constant(v),
-            RelativePermeabilitySerde::FerromagneticPermeabilityEnum(fp) => match fp {
-                FerromagneticPermeabilityEnum::FerromagneticPermeability(jordan_model) => {
-                    RelativePermeability::FerromagneticPermeability(jordan_model)
-                }
-            },
+            RelativePermeabilitySerde::FerromagneticPermeability(alias) => {
+                RelativePermeability::FerromagneticPermeability(FerromagneticPermeability {
+                    from_field_strength: alias.from_field_strength,
+                    from_flux_density: alias.from_flux_density,
+                })
+            }
+            RelativePermeabilitySerde::MagnetizationCurve(magnetization_curve) => {
+                RelativePermeability::FerromagneticPermeability(
+                    magnetization_curve
+                        .try_into()
+                        .map_err(serde::de::Error::custom)?,
+                )
+            }
+            RelativePermeabilitySerde::PolarizationCurve(polarization_curve) => {
+                RelativePermeability::FerromagneticPermeability(
+                    polarization_curve
+                        .try_into()
+                        .map_err(serde::de::Error::custom)?,
+                )
+            }
             RelativePermeabilitySerde::Function(quantity_function) => {
                 RelativePermeability::Function(quantity_function)
             }
@@ -892,8 +890,8 @@ mod serde_impl {
 
     #[derive(Deserialize)]
     pub(super) struct FerromagneticPermeabilityDeserializeAlias {
-        from_field_strength: AkimaSpline,
-        from_flux_density: AkimaSpline,
+        pub(super) from_field_strength: AkimaSpline,
+        pub(super) from_flux_density: AkimaSpline,
     }
 
     #[derive(DeserializeUntaggedVerboseError)]
@@ -929,7 +927,7 @@ mod serde_impl {
 mod tests {
 
     use super::*;
-    use approx;
+    use approxim;
 
     #[test]
     fn test_sample_bh_curve() {
@@ -958,19 +956,19 @@ mod tests {
         assert_eq!(h.len(), len);
 
         // Field strength
-        approx::assert_abs_diff_eq!(h[0].get::<ampere_per_meter>(), 0.0, epsilon = 0.001);
-        approx::assert_abs_diff_eq!(h[1].get::<ampere_per_meter>(), 10.0, epsilon = 0.001);
-        approx::assert_abs_diff_eq!(h[2].get::<ampere_per_meter>(), 20.0, epsilon = 0.001);
-        approx::assert_abs_diff_eq!(h[50].get::<ampere_per_meter>(), 580.0, epsilon = 0.001);
-        approx::assert_abs_diff_eq!(h[150].get::<ampere_per_meter>(), 7040.0, epsilon = 0.001);
-        approx::assert_abs_diff_eq!(h[299].get::<ampere_per_meter>(), 217110.0, epsilon = 0.001);
+        approxim::assert_abs_diff_eq!(h[0].get::<ampere_per_meter>(), 0.0, epsilon = 0.001);
+        approxim::assert_abs_diff_eq!(h[1].get::<ampere_per_meter>(), 10.0, epsilon = 0.001);
+        approxim::assert_abs_diff_eq!(h[2].get::<ampere_per_meter>(), 20.0, epsilon = 0.001);
+        approxim::assert_abs_diff_eq!(h[50].get::<ampere_per_meter>(), 580.0, epsilon = 0.001);
+        approxim::assert_abs_diff_eq!(h[150].get::<ampere_per_meter>(), 7040.0, epsilon = 0.001);
+        approxim::assert_abs_diff_eq!(h[299].get::<ampere_per_meter>(), 217110.0, epsilon = 0.001);
 
         // Flux density
-        approx::assert_abs_diff_eq!(b[0].get::<tesla>(), 0.0, epsilon = 0.001);
-        approx::assert_abs_diff_eq!(b[1].get::<tesla>(), 0.08142, epsilon = 0.001);
-        approx::assert_abs_diff_eq!(b[2].get::<tesla>(), 0.17399, epsilon = 0.001);
-        approx::assert_abs_diff_eq!(b[50].get::<tesla>(), 1.35845, epsilon = 0.001);
-        approx::assert_abs_diff_eq!(b[150].get::<tesla>(), 1.66712, epsilon = 0.001);
-        approx::assert_abs_diff_eq!(b[299].get::<tesla>(), 2.46926, epsilon = 0.001);
+        approxim::assert_abs_diff_eq!(b[0].get::<tesla>(), 0.0, epsilon = 0.001);
+        approxim::assert_abs_diff_eq!(b[1].get::<tesla>(), 0.08142, epsilon = 0.001);
+        approxim::assert_abs_diff_eq!(b[2].get::<tesla>(), 0.17399, epsilon = 0.001);
+        approxim::assert_abs_diff_eq!(b[50].get::<tesla>(), 1.35845, epsilon = 0.001);
+        approxim::assert_abs_diff_eq!(b[150].get::<tesla>(), 1.66712, epsilon = 0.001);
+        approxim::assert_abs_diff_eq!(b[299].get::<tesla>(), 2.46926, epsilon = 0.001);
     }
 }

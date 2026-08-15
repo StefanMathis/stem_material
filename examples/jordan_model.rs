@@ -190,12 +190,12 @@ fn from_flux_density_loss_pair() -> Result<(), Box<dyn std::error::Error>> {
     ]);
 
     let coeffs = JordanModel::try_from(&iron_loss_data)?;
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         coeffs.hysteresis_coefficient.get::<watt_per_kilogram>(),
         2.109,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         coeffs.eddy_current_coefficient.get::<watt_per_kilogram>(),
         0.598,
         epsilon = 0.001
@@ -256,12 +256,12 @@ fn from_vecs() -> Result<(), Box<dyn std::error::Error>> {
     ]);
 
     let coeffs = JordanModel::try_from(&iron_loss_data)?;
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         coeffs.hysteresis_coefficient.get::<watt_per_kilogram>(),
         4.257,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         coeffs.eddy_current_coefficient.get::<watt_per_kilogram>(),
         1.262,
         epsilon = 0.001

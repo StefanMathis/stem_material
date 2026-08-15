@@ -460,10 +460,10 @@ impl IronLossData {
     let c = res.state.get_best_param().expect("must contain coefficients");
 
     // First element is the hysteresis coefficient
-    approx::assert_abs_diff_eq!(c[0], 9.528, epsilon=1e-3);
+    approxim::assert_abs_diff_eq!(c[0], 9.528, epsilon=1e-3);
 
     // Second element is the eddy current coefficient
-    approx::assert_abs_diff_eq!(c[1], 5.265, epsilon=1e-3);
+    approxim::assert_abs_diff_eq!(c[1], 5.265, epsilon=1e-3);
     ```
      */
     pub fn solve_for_coefficients(

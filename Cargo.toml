@@ -1,6 +1,6 @@
 [package]
 name = "stem_material"
-version = "0.3.5"
+version = "0.4.0"
 edition = "2024"
 description = "Material definition for stem - a Simulation Toolbox for Electric Motors."
 readme = "README.md"
@@ -18,7 +18,7 @@ var_quantity = { version = "0.3.3" }
 akima_spline = { version = "0.1.5" }
 argmin = { version = "0.11", default-features = false }
 argmin-math = "0.5" # Explicit dependency is necessary for implementation of ArgminAdd
-serde_mosaic = { version = "0.2", optional = true }
+serde_mosaic = { version = "0.3", optional = true }
 deserialize_untagged_verbose_error = { version = "0.1.5", optional = true }
 serde = { version = "1", features = ["derive", "rc"], optional = true }
 lazy_static = "1"
@@ -32,9 +32,9 @@ serde = ["dep:serde_mosaic", "dep:deserialize_untagged_verbose_error", "akima_sp
 doc-images = ["dep:embed-doc-image"]
 
 [dev-dependencies]
-serde_yaml = "0.8"
-serde_mosaic = { version = "0.2", features = ["serde_yaml"] }
-approx = { package = "approxim", version = "0.6" }
+yaml_serde = "0.10.6"
+serde_mosaic = { version = "0.3", features = ["serde_yaml"] }
+approxim = { package = "approxim", version = "0.6" }
 indoc = "1.0"
 stem_material = { path = ".", features = ["serde"] }
 

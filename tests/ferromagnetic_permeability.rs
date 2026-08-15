@@ -25,42 +25,42 @@ fn test_relative_permeability() {
             .try_into()
             .unwrap();
 
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(0.5).into()])
             .value,
         8469.282,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(0.9).into()])
             .value,
         7647.7276,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(1.0).into()])
             .value,
         6924.8432,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(10.0).into()])
             .value,
         8.4290,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(90.0).into()])
             .value,
         1.8254,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(100.0).into()])
             .value,
@@ -69,21 +69,21 @@ fn test_relative_permeability() {
     );
 
     // Negative flux densities
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(-0.5).into()])
             .value,
         8469.282,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(-10.0).into()])
             .value,
         8.4290,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(-100.0).into()])
             .value,
@@ -117,42 +117,42 @@ fn test_relative_permeability_iron_fill_factor() {
             .try_into()
             .unwrap();
 
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(0.5).into()])
             .value,
         8045.868,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(0.9).into()])
             .value,
         6974.4999,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(1.0).into()])
             .value,
         6129.6062,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(10.0).into()])
             .value,
         8.0496,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(90.0).into()])
             .value,
         1.7833,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(100.0).into()])
             .value,
@@ -161,7 +161,7 @@ fn test_relative_permeability_iron_fill_factor() {
     );
 
     // Negative flux densities
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(0.5).into()])
             .value,
@@ -170,7 +170,7 @@ fn test_relative_permeability_iron_fill_factor() {
             .value,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         permeability
             .call(&[MagneticFluxDensity::new::<tesla>(10.0).into()])
             .value,
@@ -214,53 +214,53 @@ fn test_permeability_curve_without_iron_fill_factor() {
     )
     .unwrap();
 
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_flux_density.eval(0.5).unwrap(),
         8045.868,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_flux_density.eval(0.9).unwrap(),
         6974.4999,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_flux_density.eval(1.0).unwrap(),
         6129.6062,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_flux_density.eval(10.0).unwrap(),
         8.0057,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_flux_density.eval(90.0).unwrap(),
         1.7784,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_flux_density.eval(100.0).unwrap(),
         1.0,
         epsilon = 0.001
     );
 
     // Recreate the B(H) curve from the permeability curve
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_field_strength
             .eval(field_strength[1].get::<ampere_per_meter>())
             .unwrap(),
         8045.868,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_field_strength
             .eval(field_strength[5].get::<ampere_per_meter>())
             .unwrap(),
         8045.868,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_field_strength
             .eval(field_strength[10].get::<ampere_per_meter>())
             .unwrap(),
@@ -269,7 +269,7 @@ fn test_permeability_curve_without_iron_fill_factor() {
             / field_strength[10].get::<ampere_per_meter>(),
         epsilon = 1.0
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_field_strength
             .eval(field_strength[15].get::<ampere_per_meter>())
             .unwrap(),
@@ -278,7 +278,7 @@ fn test_permeability_curve_without_iron_fill_factor() {
             / field_strength[15].get::<ampere_per_meter>(),
         epsilon = 0.02
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_field_strength
             .eval(field_strength[20].get::<ampere_per_meter>())
             .unwrap(),
@@ -287,7 +287,7 @@ fn test_permeability_curve_without_iron_fill_factor() {
             / field_strength[20].get::<ampere_per_meter>(),
         epsilon = 0.02
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_field_strength
             .eval(field_strength[26].get::<ampere_per_meter>())
             .unwrap(),
@@ -364,7 +364,7 @@ fn test_bh_curve_reconstruction() {
     .unwrap();
 
     // Check some values from the B(H) curve given above
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_field_strength
             .eval(field_strength[10].get::<ampere_per_meter>())
             .unwrap()
@@ -373,7 +373,7 @@ fn test_bh_curve_reconstruction() {
         flux_density[10].get::<tesla>(),
         epsilon = 0.02
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_field_strength
             .eval(field_strength[20].get::<ampere_per_meter>())
             .unwrap()
@@ -430,7 +430,7 @@ fn test_bh_curve_reconstruction_from_polarization() {
     .unwrap();
 
     // Check some values from the B(H) curve given above
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_flux_density
             .eval(flux_density[10].get::<tesla>())
             .unwrap()
@@ -439,7 +439,7 @@ fn test_bh_curve_reconstruction_from_polarization() {
         flux_density[10].get::<tesla>(),
         epsilon = 0.02
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_field_strength
             .eval(field_strength[10].get::<ampere_per_meter>())
             .unwrap()
@@ -448,7 +448,7 @@ fn test_bh_curve_reconstruction_from_polarization() {
         flux_density[10].get::<tesla>(),
         epsilon = 0.02
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_field_strength
             .eval(field_strength[20].get::<ampere_per_meter>())
             .unwrap()
@@ -499,17 +499,17 @@ fn test_permeability_curve_with_iron_fill_factor() {
     )
     .unwrap();
 
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_flux_density.eval(1.0).unwrap(),
         6129.606,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_flux_density.eval(10.0).unwrap(),
         8.049,
         epsilon = 0.001
     );
-    approx::assert_abs_diff_eq!(
+    approxim::assert_abs_diff_eq!(
         fp.from_flux_density.eval(90.0).unwrap(),
         1.783,
         epsilon = 0.001
