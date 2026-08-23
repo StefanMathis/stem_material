@@ -5,10 +5,10 @@ stem_material
 docs/main.md and (if available docs/end.md). Do not modify this file, instead
 modify the components. -->
 
-[`Material`]: https://docs.rs/stem_material/0.4.0/stem_material/material/struct.Material.html
-[`FerromagneticPermeability`]: https://docs.rs/stem_material/0.4.0/stem_material/relative_permeability/struct.FerromagneticPermeability.html
-[`JordanModel`]: https://docs.rs/stem_material/0.4.0/stem_material/iron_losses/jordan_model/struct.JordanModel.html
-[module]: https://docs.rs/stem_material/0.4.0/stem_material/iron_losses/jordan_model/
+[`Material`]: https://docs.rs/stem_material/0.4.1/stem_material/material/struct.Material.html
+[`FerromagneticPermeability`]: https://docs.rs/stem_material/0.4.1/stem_material/relative_permeability/struct.FerromagneticPermeability.html
+[`JordanModel`]: https://docs.rs/stem_material/0.4.1/stem_material/iron_losses/jordan_model/struct.JordanModel.html
+[module]: https://docs.rs/stem_material/0.4.1/stem_material/iron_losses/jordan_model/
 [var_quantity]: https://crates.io/crates/var_quantity
 [relative_permeability.svg]: https://raw.githubusercontent.com/StefanMathis/stem_material/refs/heads/main/docs/img/relative_permeability.svg
 [jordan_model.svg]: https://raw.githubusercontent.com/StefanMathis/stem_material/refs/heads/main/docs/img/jordan_model.svg
@@ -17,17 +17,18 @@ modify the components. -->
 
 Material definition for stem - a Simulation Toolbox for Electric Motors.
 
-The full API documentation is available at <https://docs.rs/stem_material/0.4.0/stem_material>.
+The full API documentation is available at <https://docs.rs/stem_material/0.4.1/stem_material>.
 
 > **Feedback welcome!**  
 > Found a bug, missing docs, or have a feature request?  
 > Please open an issue on [GitHub](https://github.com/StefanMathis/stem_material.git).
 
+This crate is part of the stem (Simulation Toolbox for Electric Motors)
+framework. See the [stem book](https://stefanmathis.github.io/stem_book/) for an
+introduction.
+
 This crate provides a [`Material`] definition for simulation of electromagnetic
 devices – especially electric motors – built on top of the [var_quantity] crate.
-It is used to define motor components within stem - a Simulation Toolbox for
-Electric Motors. See the [stem book](https://stefanmathis.github.io/stem_book/)
-for an introduction to the framework.
 
 # Modeling soft magnetism
 

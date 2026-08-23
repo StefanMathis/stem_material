@@ -2,11 +2,12 @@
 > Found a bug, missing docs, or have a feature request?  
 > Please open an issue on [GitHub](https://github.com/StefanMathis/stem_material.git).
 
+This crate is part of the stem (Simulation Toolbox for Electric Motors)
+framework. See the [stem book](https://stefanmathis.github.io/stem_book/) for an
+introduction.
+
 This crate provides a [`Material`] definition for simulation of electromagnetic
 devices – especially electric motors – built on top of the [var_quantity] crate.
-It is used to define motor components within stem - a Simulation Toolbox for
-Electric Motors. See the [stem book](https://stefanmathis.github.io/stem_book/)
-for an introduction to the framework.
 
 # Modeling soft magnetism
 
