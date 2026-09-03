@@ -263,7 +263,7 @@ impl Material {
         return mem::replace(&mut self.heat_capacity, property);
     }
 
-    /// Returns the thermal conductivity of `self`.
+    /// Returns thermal conductivity of `self`.
     pub fn thermal_conductivity(&self) -> &VarQuantity<ThermalConductivity> {
         return &self.thermal_conductivity;
     }
