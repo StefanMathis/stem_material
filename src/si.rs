@@ -87,9 +87,15 @@ pub use var_quantity::uom::si::specific_power::{
     gigawatt_per_kilogram, kilowatt_per_kilogram, megawatt_per_kilogram, microwatt_per_kilogram,
     milliwatt_per_kilogram, watt_per_kilogram,
 };
+
 // Magnetism
 pub use var_quantity::uom::si::reciprocal_length::{
     reciprocal_centimeter, reciprocal_kilometer, reciprocal_micrometer, reciprocal_millimeter,
+};
+
+// Inductance
+pub use var_quantity::uom::si::inductance::{
+    henry, kilohenry, megahenry, microhenry, millihenry, nanohenry,
 };
 
 // Current and voltage
