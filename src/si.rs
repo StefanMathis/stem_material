@@ -90,7 +90,8 @@ pub use var_quantity::uom::si::specific_power::{
 
 // Magnetism
 pub use var_quantity::uom::si::reciprocal_length::{
-    reciprocal_centimeter, reciprocal_kilometer, reciprocal_micrometer, reciprocal_millimeter,
+    reciprocal_centimeter, reciprocal_kilometer, reciprocal_meter, reciprocal_micrometer,
+    reciprocal_millimeter,
 };
 
 // Inductance

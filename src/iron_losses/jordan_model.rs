@@ -13,7 +13,7 @@ by fitting measured loss curves. See \[1\] and \[2\] for more.
 
 This module offers the [`JordanModel`] struct, a simple container for the two
 loss coefficients which provides the formula given above via its
-[`JordanModel::losses`] method. The struct implements [`IsQuantityFunction`] and
+[`JordanModel::losses`] method. The struct implements [`QuantityFunction`] and
 can therefore be used as the
 [iron loss model](crate::material::Material::iron_losses) of a
 [`Material`](crate::material::Material).
@@ -70,7 +70,7 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "serde")]
 use var_quantity::deserialize_quantity;
 
-use var_quantity::IsQuantityFunction;
+use var_quantity::QuantityFunction;
 use var_quantity::uom::si::{
     f64::*, frequency::hertz, magnetic_flux_density::tesla, ratio::ratio,
     specific_power::watt_per_kilogram,
@@ -111,7 +111,7 @@ to find the coefficients which match the given curves the best. See
 
 This struct is meant to be used for the
 [`Material::iron_losses`](crate::material::Material::iron_losses), hence it
-implements [`IsQuantityFunction`]. Inside the [`IsQuantityFunction::call`]
+implements [`QuantityFunction`]. Inside the [`QuantityFunction::call`]
 function, the input conditions are searched for an entry whose unit corresponds
 to that of the magnetic flux density and another one which matches that of the
 frequency. If either one cannot be found, a value of zero is assumed, which
@@ -249,7 +249,7 @@ impl JordanModel {
 
     `f = frequency / JordanModel::reference_frequency()`
 
-    The [`IsQuantityFunction::call`] implementation for [`JordanModel`] uses
+    The [`QuantityFunction::call`] implementation for [`JordanModel`] uses
     this function after identifying `magnetic_flux_density` and `frequency` from
     the `conditions`.
 
@@ -286,7 +286,7 @@ impl JordanModel {
 }
 
 #[cfg_attr(feature = "serde", typetag::serde)]
-impl IsQuantityFunction for JordanModel {
+impl QuantityFunction for JordanModel {
     fn call(&self, conditions: &[DynQuantity<f64>]) -> DynQuantity<f64> {
         let mut flux_density = MagneticFluxDensity::new::<tesla>(0.0);
         let mut frequency = Frequency::new::<hertz>(0.0);
@@ -300,7 +300,7 @@ impl IsQuantityFunction for JordanModel {
         return self.losses(flux_density, frequency).into();
     }
 
-    fn dyn_eq(&self, other: &dyn IsQuantityFunction) -> bool {
+    fn dyn_eq(&self, other: &dyn QuantityFunction) -> bool {
         (other as &dyn std::any::Any).downcast_ref::<Self>() == Some(self)
     }
 }

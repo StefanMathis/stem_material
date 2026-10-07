@@ -13,7 +13,7 @@ fn test_serialize_material() {
         ),
         DynQuantity::new(1.0, PredefUnit::MagneticFluxDensity),
     );
-    material.set_remanence(VarQuantity::try_from_quantity_function(linear).unwrap());
+    material.set_remanence(VarQuantity::new(linear).unwrap());
     material.set_intrinsic_coercivity(VarQuantity::Constant(MagneticFieldStrength::new::<
         ampere_per_meter,
     >(5.0)));

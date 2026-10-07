@@ -72,8 +72,7 @@ use akima_spline::AkimaSpline;
 use var_quantity::uom::si::f64::*;
 use var_quantity::uom::si::magnetic_field_strength::ampere_per_meter;
 use var_quantity::uom::si::magnetic_flux_density::tesla;
-use var_quantity::{DynQuantity, PredefUnit, Unit};
-use var_quantity::{IsQuantityFunction, QuantityFunction};
+use var_quantity::{DynQuantity, PredefUnit, QuantityFunction, Unit, UnitFromType, UnitsNotEqual};
 
 #[cfg(feature = "serde")]
 use var_quantity::deserialize_vec_of_quantities;
@@ -88,7 +87,7 @@ A specialized variant of [`VarQuantity<f64>`](var_quantity::VarQuantity) for
 relative permeability.
 
 In principle, the [`FerromagneticPermeability`] case could be treated as a
-[`IsQuantityFunction`] trait object, which would allow using [`VarQuantity<f64>`](var_quantity::VarQuantity) for the
+[`QuantityFunction`] trait object, which would allow using [`VarQuantity<f64>`](var_quantity::VarQuantity) for the
 [`Material::relative_permeability`](crate::material::Material::relative_permeability)
 field. However, using the specialized enum variant
 [`RelativePermeability::FerromagneticPermeability`] instead improves performance
@@ -96,7 +95,7 @@ drastically, since no dynamic dispatch is needed. Nevertheless, user-defined
 permeability models are still supported via the
 [`RelativePermeability::Function`] variant.
  */
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone)]
 pub enum RelativePermeability {
     /**
     Optimization for the common case of a constant quantity. This avoids going
@@ -111,11 +110,35 @@ pub enum RelativePermeability {
     FerromagneticPermeability(FerromagneticPermeability),
     /**
     Catch-all variant for any non-constant behaviour. Arbitrary behaviour
-    can be realized with the contained [`IsQuantityFunction`] trait object, as
+    can be realized with the contained [`QuantityFunction`] trait object, as
     long as the unit constraint outlined in the
     [`VarQuantity`](var_quantity::VarQuantity) docstring is upheld.
      */
-    Function(QuantityFunction<f64>),
+    Function(Box<dyn QuantityFunction>),
+}
+
+impl std::fmt::Debug for RelativePermeability {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Constant(arg0) => f.debug_tuple("Constant").field(arg0).finish(),
+            Self::FerromagneticPermeability(arg0) => f
+                .debug_tuple("FerromagneticPermeability")
+                .field(arg0)
+                .finish(),
+            Self::Function(_) => f.debug_tuple("Function").finish(),
+        }
+    }
+}
+
+impl PartialEq for RelativePermeability {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (Self::Constant(l0), Self::Constant(r0)) => l0 == r0,
+            (Self::FerromagneticPermeability(l0), Self::FerromagneticPermeability(r0)) => l0 == r0,
+            (Self::Function(l0), Self::Function(r0)) => l0.dyn_eq(&**r0),
+            _ => false,
+        }
+    }
 }
 
 #[cfg(feature = "serde")]
@@ -129,7 +152,7 @@ impl serde::Serialize for RelativePermeability {
         enum RelativePermeabilitySerde<'a> {
             Constant(f64),
             FerromagneticPermeability(&'a FerromagneticPermeability),
-            Function(&'a QuantityFunction<f64>),
+            Function(&'a dyn QuantityFunction),
         }
 
         let rp = match self {
@@ -138,7 +161,7 @@ impl serde::Serialize for RelativePermeability {
                 RelativePermeabilitySerde::FerromagneticPermeability(fp)
             }
             RelativePermeability::Function(quantity_function) => {
-                RelativePermeabilitySerde::Function(quantity_function)
+                RelativePermeabilitySerde::Function(&**quantity_function)
             }
         };
         rp.serialize(serializer)
@@ -157,7 +180,7 @@ impl<'de> serde::Deserialize<'de> for RelativePermeability {
             FerromagneticPermeability(serde_impl::FerromagneticPermeabilityDeserializeAlias),
             MagnetizationCurve(MagnetizationCurve),
             PolarizationCurve(PolarizationCurve),
-            Function(QuantityFunction<f64>),
+            Function(Box<dyn QuantityFunction>),
         }
 
         let rp_de = RelativePermeabilitySerde::deserialize(deserializer)?;
@@ -193,6 +216,29 @@ impl<'de> serde::Deserialize<'de> for RelativePermeability {
 
 impl RelativePermeability {
     /**
+    Creates a new [`RelativePermeability`] instance if the output of the given
+    `function` can be converted into [`f64`].
+
+    As [`RelativePermeability`] is a specialized variant of
+    [`VarQuantity`](var_quantity::VarQuantity), this is the specialized variant
+    of [`VarQuantity::new`](var_quantity::VarQuantity::new) which checks if the
+    output of `function` can be converted into [`f64`].
+
+    Due to the additional conversion check, it is recommended to use this
+    function instead of directly constructing the
+    [`RelativePermeability::Function`] variant.
+    */
+    pub fn new<F: QuantityFunction>(function: F) -> Result<Self, UnitsNotEqual> {
+        // Check if the function produced the correct type for "default"
+        // conditions.
+        let output = function.call(&[]);
+        if let Err(_) = f64::try_from(output) {
+            return Err(UnitsNotEqual(f64::unit_from_type(), output.unit));
+        }
+        return Ok(Self::Function(Box::new(function)));
+    }
+
+    /**
     Matches against `self` and calculates the iron losses (or just return the
     value in case of the [`RelativePermeability::Constant`]) variant).
     */
@@ -200,7 +246,7 @@ impl RelativePermeability {
         match self {
             Self::Constant(val) => val.clone(),
             Self::FerromagneticPermeability(model) => model.call(conditions).try_into().expect("implementation of FerromagneticPermeability makes sure the returned value is always a f64"),
-            Self::Function(fun) => fun.call(conditions),
+            Self::Function(fun) => f64::try_from(fun.call(conditions)).unwrap_or_default(),
         }
     }
 
@@ -208,20 +254,11 @@ impl RelativePermeability {
     Returns a reference to the underlying function if `self` is a
     [`RelativePermeability::Function`].
      */
-    pub fn function(&self) -> Option<&dyn IsQuantityFunction> {
+    pub fn function(&self) -> Option<&dyn QuantityFunction> {
         match self {
             Self::Function(quantity_function) => return Some(quantity_function.as_ref()),
             _ => return None,
         }
-    }
-}
-
-impl TryFrom<Box<dyn IsQuantityFunction>> for RelativePermeability {
-    type Error = var_quantity::UnitsNotEqual;
-
-    fn try_from(value: Box<dyn IsQuantityFunction>) -> Result<Self, Self::Error> {
-        let wrapper = QuantityFunction::new(value)?;
-        return Ok(Self::Function(wrapper));
     }
 }
 
@@ -262,8 +299,8 @@ to build the struct directly from its fields using manually created splines.
 
 This struct is meant to be used for the
 [`Material::relative_permeability`](crate::material::Material::relative_permeability),
-hence it implements [`IsQuantityFunction`]. Inside the
-[`IsQuantityFunction::call`] function, the input conditions are searched for an
+hence it implements [`QuantityFunction`]. Inside the
+[`QuantityFunction::call`] function, the input conditions are searched for an
 entry whose unit corresponds to that of the magnetic field strength or flux
 density. If one is found, the corresponding spline is selected and the resulting
 relative permeability is returned. Otherwise, the relative permeability at 0 T /
@@ -434,7 +471,7 @@ impl FerromagneticPermeability {
 }
 
 #[cfg_attr(feature = "serde", typetag::serde)]
-impl IsQuantityFunction for FerromagneticPermeability {
+impl QuantityFunction for FerromagneticPermeability {
     fn call(&self, conditions: &[DynQuantity<f64>]) -> DynQuantity<f64> {
         for f in conditions {
             if f.unit == Unit::from(PredefUnit::MagneticFieldStrength) {
@@ -454,7 +491,7 @@ impl IsQuantityFunction for FerromagneticPermeability {
         return self.from_flux_density.eval_infallible(0.0).into();
     }
 
-    fn dyn_eq(&self, other: &dyn IsQuantityFunction) -> bool {
+    fn dyn_eq(&self, other: &dyn QuantityFunction) -> bool {
         (other as &dyn std::any::Any).downcast_ref::<Self>() == Some(self)
     }
 }
