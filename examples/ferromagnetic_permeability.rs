@@ -26,7 +26,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for flux_density in [0.1, -0.1].into_iter() {
         approxim::assert_abs_diff_eq!(
             permeability
-                .call(&[MagneticFluxDensity::new::<tesla>(flux_density).into()])
+                .eval(&[MagneticFluxDensity::new::<tesla>(flux_density).into()])
                 .value,
             8469.282,
             epsilon = 0.001
@@ -35,7 +35,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for flux_density in [1.5, -1.5].into_iter() {
         approxim::assert_abs_diff_eq!(
             permeability
-                .call(&[MagneticFluxDensity::new::<tesla>(flux_density).into()])
+                .eval(&[MagneticFluxDensity::new::<tesla>(flux_density).into()])
                 .value,
             503.64,
             epsilon = 0.001
@@ -44,7 +44,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for flux_density in [2.5, -2.5].into_iter() {
         approxim::assert_abs_diff_eq!(
             permeability
-                .call(&[MagneticFluxDensity::new::<tesla>(flux_density).into()])
+                .eval(&[MagneticFluxDensity::new::<tesla>(flux_density).into()])
                 .value,
             9.048,
             epsilon = 0.001

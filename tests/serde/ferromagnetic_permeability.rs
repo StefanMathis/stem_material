@@ -32,29 +32,29 @@ fn test_serialize_and_deserialize_relative_permeability() {
 
     let conditions = &[MagneticFluxDensity::new::<tesla>(1.5).into()];
     approxim::assert_abs_diff_eq!(
-        permeability.call(conditions).value,
-        de_permeability.call(conditions).value,
+        permeability.eval(conditions).value,
+        de_permeability.eval(conditions).value,
         epsilon = 0.001
     );
 
     let conditions = &[MagneticFluxDensity::new::<tesla>(0.5).into()];
     approxim::assert_abs_diff_eq!(
-        permeability.call(conditions).value,
-        de_permeability.call(conditions).value,
+        permeability.eval(conditions).value,
+        de_permeability.eval(conditions).value,
         epsilon = 0.001
     );
 
     let conditions = &[MagneticFluxDensity::new::<tesla>(-0.5).into()];
     approxim::assert_abs_diff_eq!(
-        permeability.call(conditions).value,
-        de_permeability.call(conditions).value,
+        permeability.eval(conditions).value,
+        de_permeability.eval(conditions).value,
         epsilon = 0.001
     );
 
     let conditions = &[MagneticFluxDensity::new::<tesla>(-10.0).into()];
     approxim::assert_abs_diff_eq!(
-        permeability.call(conditions).value,
-        de_permeability.call(conditions).value,
+        permeability.eval(conditions).value,
+        de_permeability.eval(conditions).value,
         epsilon = 0.001
     );
 }
@@ -79,14 +79,14 @@ fn test_deserialize_relative_permeability_from_raw_data() {
 
     approxim::assert_abs_diff_eq!(
         de_permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(-0.5).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(-0.5).into()])
             .value,
         8045.868,
         epsilon = 0.001
     );
     approxim::assert_abs_diff_eq!(
         de_permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(10.0).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(10.0).into()])
             .value,
         8.2107,
         epsilon = 0.001

@@ -27,42 +27,42 @@ fn test_relative_permeability() {
 
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(0.5).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(0.5).into()])
             .value,
         8469.282,
         epsilon = 0.001
     );
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(0.9).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(0.9).into()])
             .value,
         7647.7276,
         epsilon = 0.001
     );
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(1.0).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(1.0).into()])
             .value,
         6924.8432,
         epsilon = 0.001
     );
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(10.0).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(10.0).into()])
             .value,
         8.4290,
         epsilon = 0.001
     );
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(90.0).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(90.0).into()])
             .value,
         1.8254,
         epsilon = 0.001
     );
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(100.0).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(100.0).into()])
             .value,
         1.0,
         epsilon = 0.001
@@ -71,21 +71,21 @@ fn test_relative_permeability() {
     // Negative flux densities
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(-0.5).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(-0.5).into()])
             .value,
         8469.282,
         epsilon = 0.001
     );
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(-10.0).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(-10.0).into()])
             .value,
         8.4290,
         epsilon = 0.001
     );
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(-100.0).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(-100.0).into()])
             .value,
         1.0,
         epsilon = 0.001
@@ -119,42 +119,42 @@ fn test_relative_permeability_iron_fill_factor() {
 
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(0.5).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(0.5).into()])
             .value,
         8045.868,
         epsilon = 0.001
     );
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(0.9).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(0.9).into()])
             .value,
         6974.4999,
         epsilon = 0.001
     );
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(1.0).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(1.0).into()])
             .value,
         6129.6062,
         epsilon = 0.001
     );
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(10.0).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(10.0).into()])
             .value,
         8.0496,
         epsilon = 0.001
     );
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(90.0).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(90.0).into()])
             .value,
         1.7833,
         epsilon = 0.001
     );
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(100.0).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(100.0).into()])
             .value,
         1.0,
         epsilon = 0.001
@@ -163,19 +163,19 @@ fn test_relative_permeability_iron_fill_factor() {
     // Negative flux densities
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(0.5).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(0.5).into()])
             .value,
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(-0.5).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(-0.5).into()])
             .value,
         epsilon = 0.001
     );
     approxim::assert_abs_diff_eq!(
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(10.0).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(10.0).into()])
             .value,
         permeability
-            .call(&[MagneticFluxDensity::new::<tesla>(-10.0).into()])
+            .eval(&[MagneticFluxDensity::new::<tesla>(-10.0).into()])
             .value,
         epsilon = 0.001
     );

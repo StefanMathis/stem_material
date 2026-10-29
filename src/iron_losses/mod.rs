@@ -87,7 +87,7 @@ impl IronLosses {
     pub fn new<F: QuantityFunction>(function: F) -> Result<Self, UnitsNotEqual> {
         // Check if the function produced the correct type for "default"
         // conditions.
-        let output = function.call(&[]);
+        let output = function.eval(&[]);
         if let Err(_) = SpecificPower::try_from(output) {
             return Err(UnitsNotEqual(SpecificPower::unit_from_type(), output.unit));
         }
@@ -101,8 +101,8 @@ impl IronLosses {
     pub fn get(&self, conditions: &[DynQuantity<f64>]) -> SpecificPower {
         match self {
             Self::Constant(val) => val.clone(),
-            Self::JordanModel(model) => model.call(conditions).try_into().expect("implementation of JordanModel makes sure the returned value is always a SpecificPower"),
-            Self::Function(fun) => SpecificPower::try_from(fun.call(conditions)).unwrap_or_default(),
+            Self::JordanModel(model) => model.eval(conditions).try_into().expect("implementation of JordanModel makes sure the returned value is always a SpecificPower"),
+            Self::Function(fun) => SpecificPower::try_from(fun.eval(conditions)).unwrap_or_default(),
         }
     }
 

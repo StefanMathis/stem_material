@@ -231,7 +231,7 @@ impl RelativePermeability {
     pub fn new<F: QuantityFunction>(function: F) -> Result<Self, UnitsNotEqual> {
         // Check if the function produced the correct type for "default"
         // conditions.
-        let output = function.call(&[]);
+        let output = function.eval(&[]);
         if let Err(_) = f64::try_from(output) {
             return Err(UnitsNotEqual(f64::unit_from_type(), output.unit));
         }
@@ -245,8 +245,8 @@ impl RelativePermeability {
     pub fn get(&self, conditions: &[DynQuantity<f64>]) -> f64 {
         match self {
             Self::Constant(val) => val.clone(),
-            Self::FerromagneticPermeability(model) => model.call(conditions).try_into().expect("implementation of FerromagneticPermeability makes sure the returned value is always a f64"),
-            Self::Function(fun) => f64::try_from(fun.call(conditions)).unwrap_or_default(),
+            Self::FerromagneticPermeability(model) => model.eval(conditions).try_into().expect("implementation of FerromagneticPermeability makes sure the returned value is always a f64"),
+            Self::Function(fun) => f64::try_from(fun.eval(conditions)).unwrap_or_default(),
         }
     }
 
@@ -472,7 +472,7 @@ impl FerromagneticPermeability {
 
 #[cfg_attr(feature = "serde", typetag::serde)]
 impl QuantityFunction for FerromagneticPermeability {
-    fn call(&self, conditions: &[DynQuantity<f64>]) -> DynQuantity<f64> {
+    fn eval(&self, conditions: &[DynQuantity<f64>]) -> DynQuantity<f64> {
         for f in conditions {
             if f.unit == Unit::from(PredefUnit::MagneticFieldStrength) {
                 return self

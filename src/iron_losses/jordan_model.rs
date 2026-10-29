@@ -126,12 +126,12 @@ let model = JordanModel {
 };
 
 let conditions = &[ThermodynamicTemperature::new::<degree_celsius>(20.0).into()];
-assert_eq!(model.call(conditions).value, 0.0);
+assert_eq!(model.eval(conditions).value, 0.0);
 
 // This call returns the sum of the coefficients, because the input matches
 // the reference values and therefore the resulting `f` and `B` are 1
 let conditions = &[MagneticFluxDensity::new::<tesla>(1.5).into(), Frequency::new::<hertz>(50.0).into()];
-assert_eq!(model.call(conditions).value, 1.5);
+assert_eq!(model.eval(conditions).value, 1.5);
 ```
 
 # Serialization and deserialization
@@ -287,7 +287,7 @@ impl JordanModel {
 
 #[cfg_attr(feature = "serde", typetag::serde)]
 impl QuantityFunction for JordanModel {
-    fn call(&self, conditions: &[DynQuantity<f64>]) -> DynQuantity<f64> {
+    fn eval(&self, conditions: &[DynQuantity<f64>]) -> DynQuantity<f64> {
         let mut flux_density = MagneticFluxDensity::new::<tesla>(0.0);
         let mut frequency = Frequency::new::<hertz>(0.0);
         for factor in conditions {
