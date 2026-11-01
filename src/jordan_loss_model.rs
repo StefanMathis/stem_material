@@ -80,7 +80,7 @@ use var_quantity::uom::si::{
 Implementation of the Jordan iron loss model.
 
 As discussed in the
-[module-level documentation](crate::iron_losses::jordan_model), this struct
+[module-level documentation](crate::jordan_loss_model), this struct
 contains the hysteresis and eddy current loss coefficients of the Jordan iron
 loss model:
 
@@ -111,7 +111,7 @@ to find the coefficients which match the given curves the best. See
 
 This struct is meant to be used for the
 [`Material::iron_losses`](crate::material::Material::iron_losses), hence it
-implements [`QuantityFunction`]. Inside the [`QuantityFunction::call`]
+implements [`QuantityFunction`]. Inside the [`QuantityFunction::eval`]
 function, the input conditions are searched for an entry whose unit corresponds
 to that of the magnetic flux density and another one which matches that of the
 frequency. If either one cannot be found, a value of zero is assumed, which
@@ -199,7 +199,7 @@ impl JordanModel {
     /**
     Returns the "reference frequency" of 50 Hz used in the model.
 
-    A frequency input to [`JordanModel::losses`] or [`JordanModel::call`] is
+    A frequency input to [`JordanModel::losses`] or [`JordanModel::eval`] is
     divided by this value before being inserted into the model equation.
 
     # Examples
@@ -217,7 +217,7 @@ impl JordanModel {
     /**
     Returns the "reference flux density" of 1.5 T used in the model.
 
-    A flux density input to [`JordanModel::losses`] or [`JordanModel::call`] is
+    A flux density input to [`JordanModel::losses`] or [`JordanModel::eval`] is
     divided by this value before being inserted into the model equation.
 
     # Examples
@@ -249,7 +249,7 @@ impl JordanModel {
 
     `f = frequency / JordanModel::reference_frequency()`
 
-    The [`QuantityFunction::call`] implementation for [`JordanModel`] uses
+    The [`QuantityFunction::eval`] implementation for [`JordanModel`] uses
     this function after identifying `magnetic_flux_density` and `frequency` from
     the `conditions`.
 

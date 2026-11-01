@@ -27,8 +27,8 @@ fn test_serialize_and_deserialize_relative_permeability() {
             .try_into()
             .unwrap();
 
-    let serialized = yaml_serde::to_string(&permeability).unwrap();
-    let de_permeability: FerromagneticPermeability = yaml_serde::from_str(&serialized).unwrap();
+    let serialized = serde_yaml::to_string(&permeability).unwrap();
+    let de_permeability: FerromagneticPermeability = serde_yaml::from_str(&serialized).unwrap();
 
     let conditions = &[MagneticFluxDensity::new::<tesla>(1.5).into()];
     approxim::assert_abs_diff_eq!(
@@ -75,7 +75,7 @@ fn test_deserialize_relative_permeability_from_raw_data() {
     iron_fill_factor: 0.95
     "};
 
-    let de_permeability: FerromagneticPermeability = yaml_serde::from_str(&serialized).unwrap();
+    let de_permeability: FerromagneticPermeability = serde_yaml::from_str(&serialized).unwrap();
 
     approxim::assert_abs_diff_eq!(
         de_permeability

@@ -15,7 +15,7 @@ fn test_copper() {
     approxim::assert_abs_diff_eq!(
         copper
             .electrical_resistivity()
-            .get(&[ThermodynamicTemperature::new::<degree_celsius>(20.0).into()])
+            .eval(&[ThermodynamicTemperature::new::<degree_celsius>(20.0).into()])
             .get::<ohm_meter>(),
         1.78571429e-8,
         epsilon = 0.001
@@ -23,7 +23,7 @@ fn test_copper() {
     approxim::assert_abs_diff_eq!(
         copper
             .electrical_resistivity()
-            .get(&[ThermodynamicTemperature::new::<degree_celsius>(120.0).into()])
+            .eval(&[ThermodynamicTemperature::new::<degree_celsius>(120.0).into()])
             .get::<ohm_meter>(),
         2.4875e-8,
         epsilon = 0.001
@@ -32,7 +32,7 @@ fn test_copper() {
     approxim::assert_abs_diff_eq!(
         copper
             .relative_permeability()
-            .get(&[ThermodynamicTemperature::new::<degree_celsius>(120.0).into()]),
+            .eval(&[ThermodynamicTemperature::new::<degree_celsius>(120.0).into()]),
         0.9999904,
         epsilon = 0.001
     );
@@ -40,7 +40,7 @@ fn test_copper() {
     approxim::assert_abs_diff_eq!(
         copper
             .mass_density()
-            .get(&[])
+            .eval(&[])
             .get::<kilogram_per_cubic_meter>(),
         8920.0,
         epsilon = 0.001
@@ -54,7 +54,7 @@ fn test_ferrite_magnet() {
     approxim::assert_abs_diff_eq!(
         ferrite
             .electrical_resistivity()
-            .get(&[ThermodynamicTemperature::new::<degree_celsius>(20.0).into()])
+            .eval(&[ThermodynamicTemperature::new::<degree_celsius>(20.0).into()])
             .get::<ohm_meter>(),
         1e6,
         epsilon = 0.001
@@ -62,7 +62,7 @@ fn test_ferrite_magnet() {
     approxim::assert_abs_diff_eq!(
         ferrite
             .remanence()
-            .get(&[ThermodynamicTemperature::new::<degree_celsius>(20.0).into()])
+            .eval(&[ThermodynamicTemperature::new::<degree_celsius>(20.0).into()])
             .get::<tesla>(),
         0.43,
         epsilon = 0.001
@@ -70,7 +70,7 @@ fn test_ferrite_magnet() {
     approxim::assert_abs_diff_eq!(
         ferrite
             .remanence()
-            .get(&[ThermodynamicTemperature::new::<degree_celsius>(120.0).into()])
+            .eval(&[ThermodynamicTemperature::new::<degree_celsius>(120.0).into()])
             .get::<tesla>(),
         0.355481,
         epsilon = 0.001
@@ -85,7 +85,7 @@ fn test_lamination_1() {
     approxim::assert_abs_diff_eq!(
         lamination
             .relative_permeability()
-            .get(&[MagneticFluxDensity::new::<tesla>(0.0).into()]),
+            .eval(&[MagneticFluxDensity::new::<tesla>(0.0).into()]),
         8045.868,
         epsilon = 0.001
     );
@@ -94,7 +94,7 @@ fn test_lamination_1() {
     approxim::assert_abs_diff_eq!(
         lamination
             .relative_permeability()
-            .get(&[ThermodynamicTemperature::new::<degree_celsius>(120.0).into()]),
+            .eval(&[ThermodynamicTemperature::new::<degree_celsius>(120.0).into()]),
         8045.868,
         epsilon = 0.001
     );
@@ -103,14 +103,14 @@ fn test_lamination_1() {
     approxim::assert_abs_diff_eq!(
         lamination
             .relative_permeability()
-            .get(&[MagneticFluxDensity::new::<tesla>(1.0).into()]),
+            .eval(&[MagneticFluxDensity::new::<tesla>(1.0).into()]),
         6129.606,
         epsilon = 0.001
     );
     approxim::assert_abs_diff_eq!(
         lamination
             .relative_permeability()
-            .get(&[MagneticFluxDensity::new::<tesla>(-1.0).into()]),
+            .eval(&[MagneticFluxDensity::new::<tesla>(-1.0).into()]),
         6129.606,
         epsilon = 0.001
     );
@@ -119,7 +119,7 @@ fn test_lamination_1() {
     approxim::assert_abs_diff_eq!(
         lamination
             .relative_permeability()
-            .get(&[MagneticFluxDensity::new::<tesla>(99.0).into()]),
+            .eval(&[MagneticFluxDensity::new::<tesla>(99.0).into()]),
         1.0775785,
         epsilon = 0.001
     );
@@ -134,20 +134,23 @@ fn test_lamination_2() {
     approxim::assert_abs_diff_eq!(
         lamination
             .relative_permeability()
-            .get(&[MagneticFluxDensity::new::<tesla>(0.5).into()]),
+            .eval(&[MagneticFluxDensity::new::<tesla>(0.5).into()]),
         3801.993,
         epsilon = 0.001
     );
     approxim::assert_abs_diff_eq!(
         lamination
             .relative_permeability()
-            .get(&[MagneticFluxDensity::new::<tesla>(1.0).into()]),
+            .eval(&[MagneticFluxDensity::new::<tesla>(1.0).into()]),
         3777.110,
         epsilon = 0.001
     );
 
     // Calculated loss coefficients
-    if let IronLosses::JordanModel(model) = lamination.iron_losses {
+    if let RpnToken::OperandFn(fun) = &lamination.iron_losses.tokens()[0] {
+        let model = (&**fun as &dyn std::any::Any)
+            .downcast_ref::<JordanModel>()
+            .unwrap();
         approxim::assert_abs_diff_eq!(
             model.hysteresis_coefficient.get::<watt_per_kilogram>(),
             4.248,
@@ -159,7 +162,7 @@ fn test_lamination_2() {
             epsilon = 0.001
         );
     } else {
-        panic!("should not be a constant")
+        panic!("wrong model");
     }
 }
 
@@ -168,7 +171,7 @@ fn test_titan() {
     let titan: Material = create_dbm().read("Titan").unwrap();
     approxim::assert_abs_diff_eq!(
         1.0 / (2.7e6),
-        titan.electrical_resistivity().get(&[]).get::<ohm_meter>(),
+        titan.electrical_resistivity().eval(&[]).get::<ohm_meter>(),
         epsilon = 1e-6
     )
 }

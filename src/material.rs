@@ -13,14 +13,9 @@ use std::ffi::OsStr;
 
 use std::{fmt::Debug, mem};
 use var_quantity::uom::si::{
-    electrical_resistivity::ohm_meter, f64::*, magnetic_field_strength::ampere_per_meter,
-    magnetic_flux_density::tesla, magnetic_permeability::henry_per_meter,
-    mass_density::kilogram_per_cubic_meter, specific_heat_capacity::joule_per_kilogram_kelvin,
-    specific_power::watt_per_kilogram, thermal_conductivity::watt_per_meter_kelvin,
+    electrical_resistivity::ohm_meter, f64::*, magnetic_permeability::henry_per_meter,
+    mass_density::kilogram_per_cubic_meter,
 };
-
-use crate::iron_losses::*;
-use crate::relative_permeability::*;
 
 /**
 SI-value of the vacuum magnetic permeability (4π*1e-7 N*A²) without units.
@@ -88,13 +83,13 @@ struct RoundWire {
 
 impl Wire for RoundWire {
     fn resistance(&self, temperature: ThermodynamicTemperature) -> ElectricalResistance {
-        let resistivity = self.material.electrical_resistivity.get(&[temperature.into()]);
+        let resistivity = self.material.electrical_resistivity.eval(&[temperature.into()]);
         return self.length * resistivity / self.cross_surface;
     }
 }
 ```
 The `Wire` trait would then be used inside stem to calculate the resistance,
-using the wire temperature as a `condition` input to [`VarQuantity::get`].
+using the wire temperature as a `conditions` input to [`VarQuantity::eval`].
 
 [`Material`] provides a [`Default`] implementation with reasonable defaults for
 each physical property to allow incremental construction. These default values
@@ -114,20 +109,20 @@ pub struct Material {
     ///
     /// Defaults to 1.
     #[cfg_attr(feature = "serde", serde(default = "default_relative_permeability"))]
-    pub relative_permeability: RelativePermeability,
+    pub relative_permeability: VarQuantity<f64>,
 
     /// Specific iron losses of `self`.
     ///
     /// Defaults to 0 W/kg.
-    #[cfg_attr(feature = "serde", serde(default = "default_iron_losses"))]
-    pub iron_losses: IronLosses,
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub iron_losses: VarQuantity<SpecificPower>,
 
     /// Remanence of `self`. This value is usually zero except for permanent
     /// magnets. For permanent magnets, this value is expected to be the remance
     /// in the magnetization / easy axis.
     ///
     /// Defaults to 0 T.
-    #[cfg_attr(feature = "serde", serde(default = "default_remanence"))]
+    #[cfg_attr(feature = "serde", serde(default))]
     pub remanence: VarQuantity<MagneticFluxDensity>,
 
     /// Intrinsic coercivity of `self`. This value is usually zero except for
@@ -135,7 +130,7 @@ pub struct Material {
     /// the coercitivity in the magnetization / easy axis.
     ///
     /// Defaults to 0 A/m.
-    #[cfg_attr(feature = "serde", serde(default = "default_intrinsic_coercivity"))]
+    #[cfg_attr(feature = "serde", serde(default))]
     pub intrinsic_coercivity: VarQuantity<MagneticFieldStrength>,
 
     /// Electrical resistivity of `self`. For isolators, this value is infinity,
@@ -154,13 +149,13 @@ pub struct Material {
     /// Specific heat capacity of `self`.
     ///
     /// Defaults to 0 J/(kg * K).
-    #[cfg_attr(feature = "serde", serde(default = "default_heat_capacity"))]
+    #[cfg_attr(feature = "serde", serde(default))]
     pub heat_capacity: VarQuantity<SpecificHeatCapacity>,
 
     /// Thermal conductivity of `self`.
     ///
     /// Defaults to 0 W/(m * K).
-    #[cfg_attr(feature = "serde", serde(default = "default_thermal_conductivity"))]
+    #[cfg_attr(feature = "serde", serde(default))]
     pub thermal_conductivity: VarQuantity<ThermalConductivity>,
 }
 
@@ -176,25 +171,25 @@ impl Material {
     }
 
     /// Returns the relative permeability of `self`.
-    pub fn relative_permeability(&self) -> &RelativePermeability {
+    pub fn relative_permeability(&self) -> &VarQuantity<f64> {
         return &self.relative_permeability;
     }
 
     /// Sets a new relative permeability and returns the old one.
-    pub fn set_relative_permeability(
-        &mut self,
-        property: RelativePermeability,
-    ) -> RelativePermeability {
+    pub fn set_relative_permeability(&mut self, property: VarQuantity<f64>) -> VarQuantity<f64> {
         return mem::replace(&mut self.relative_permeability, property);
     }
 
     /// Returns the specific iron losses of `self`.
-    pub fn iron_losses(&self) -> &IronLosses {
+    pub fn iron_losses(&self) -> &VarQuantity<SpecificPower> {
         return &self.iron_losses;
     }
 
     /// Sets new specific iron losses and returns the old ones.
-    pub fn set_iron_losses(&mut self, property: IronLosses) -> IronLosses {
+    pub fn set_iron_losses(
+        &mut self,
+        property: VarQuantity<SpecificPower>,
+    ) -> VarQuantity<SpecificPower> {
         return mem::replace(&mut self.iron_losses, property);
     }
 
@@ -282,13 +277,13 @@ impl Default for Material {
         return Material {
             name: "default_name".to_string(),
             relative_permeability: default_relative_permeability(),
-            iron_losses: default_iron_losses(),
-            remanence: default_remanence(),
-            intrinsic_coercivity: default_intrinsic_coercivity(),
+            iron_losses: Default::default(),
+            remanence: Default::default(),
+            intrinsic_coercivity: Default::default(),
             electrical_resistivity: default_electrical_resistivity(),
             mass_density: default_mass_density(),
-            heat_capacity: default_heat_capacity(),
-            thermal_conductivity: default_thermal_conductivity(),
+            heat_capacity: Default::default(),
+            thermal_conductivity: Default::default(),
         };
     }
 }
@@ -301,34 +296,14 @@ impl DatabaseEntry for Material {
     }
 }
 
-fn default_relative_permeability() -> RelativePermeability {
-    return RelativePermeability::Constant(1.0);
-}
-
-fn default_iron_losses() -> IronLosses {
-    return IronLosses::Constant(SpecificPower::new::<watt_per_kilogram>(0.0));
-}
-
-fn default_remanence() -> VarQuantity<MagneticFluxDensity> {
-    return VarQuantity::Constant(MagneticFluxDensity::new::<tesla>(0.0));
-}
-
-fn default_intrinsic_coercivity() -> VarQuantity<MagneticFieldStrength> {
-    return VarQuantity::Constant(MagneticFieldStrength::new::<ampere_per_meter>(0.0));
+fn default_relative_permeability() -> VarQuantity<f64> {
+    return VarQuantity::from(1.0);
 }
 
 fn default_electrical_resistivity() -> VarQuantity<ElectricalResistivity> {
-    return VarQuantity::Constant(ElectricalResistivity::new::<ohm_meter>(std::f64::INFINITY));
+    return VarQuantity::from(ElectricalResistivity::new::<ohm_meter>(std::f64::INFINITY));
 }
 
 fn default_mass_density() -> VarQuantity<MassDensity> {
-    return VarQuantity::Constant(MassDensity::new::<kilogram_per_cubic_meter>(1000.0));
-}
-
-fn default_heat_capacity() -> VarQuantity<SpecificHeatCapacity> {
-    return VarQuantity::Constant(SpecificHeatCapacity::new::<joule_per_kilogram_kelvin>(0.0));
-}
-
-fn default_thermal_conductivity() -> VarQuantity<ThermalConductivity> {
-    return VarQuantity::Constant(ThermalConductivity::new::<watt_per_meter_kelvin>(0.0));
+    return VarQuantity::from(MassDensity::new::<kilogram_per_cubic_meter>(1000.0));
 }

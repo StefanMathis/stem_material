@@ -8,8 +8,8 @@ fn test_serialize_and_deserialize_iron_losses() {
         SpecificPower::new::<watt_per_kilogram>(0.5),
     );
 
-    let serialized = yaml_serde::to_string(&iron_loss_coeffs).unwrap();
-    let de_iron_loss_coeffs: JordanModel = yaml_serde::from_str(&serialized).unwrap();
+    let serialized = serde_yaml::to_string(&iron_loss_coeffs).unwrap();
+    let de_iron_loss_coeffs: JordanModel = serde_yaml::from_str(&serialized).unwrap();
 
     approxim::assert_abs_diff_eq!(
         iron_loss_coeffs
@@ -116,7 +116,7 @@ fn test_deserialize_iron_losses() {
         specific_loss: 37.56 W/kg
     "};
 
-    let de_iron_loss_coeffs: JordanModel = yaml_serde::from_str(&serialized).unwrap();
+    let de_iron_loss_coeffs: JordanModel = serde_yaml::from_str(&serialized).unwrap();
 
     approxim::assert_abs_diff_eq!(
         de_iron_loss_coeffs
@@ -140,7 +140,7 @@ fn test_serialize_and_deserialize_material() {
 
     // Adjust some properties
     {
-        material.set_mass_density(VarQuantity::Constant(MassDensity::new::<
+        material.set_mass_density(VarQuantity::from(MassDensity::new::<
             kilogram_per_cubic_meter,
         >(5.0)));
 
@@ -166,41 +166,39 @@ fn test_serialize_and_deserialize_material() {
                 .unwrap()
                 .try_into()
                 .unwrap();
-        material.set_relative_permeability(RelativePermeability::FerromagneticPermeability(
-            permeability,
-        ));
+        material.set_relative_permeability(VarQuantity::new(permeability).unwrap());
     }
 
-    let serialized = yaml_serde::to_string(&material).unwrap();
-    let de_material: Material = yaml_serde::from_str(&serialized).unwrap();
+    let serialized = serde_yaml::to_string(&material).unwrap();
+    let de_material: Material = serde_yaml::from_str(&serialized).unwrap();
 
     let conditions = &[MagneticFluxDensity::new::<tesla>(0.5).into()];
     approxim::assert_abs_diff_eq!(
-        material.relative_permeability().get(conditions),
+        material.relative_permeability().eval(conditions),
         8045.86,
         epsilon = 0.01
     );
     approxim::assert_abs_diff_eq!(
-        material.relative_permeability().get(conditions),
-        de_material.relative_permeability().get(conditions),
+        material.relative_permeability().eval(conditions),
+        de_material.relative_permeability().eval(conditions),
         epsilon = 0.01
     );
 
     approxim::assert_abs_diff_eq!(
         material
             .mass_density()
-            .get(conditions)
+            .eval(conditions)
             .get::<kilogram_per_cubic_meter>(),
         5.0
     );
     approxim::assert_abs_diff_eq!(
         material
             .mass_density()
-            .get(conditions)
+            .eval(conditions)
             .get::<kilogram_per_cubic_meter>(),
         de_material
             .mass_density()
-            .get(conditions)
+            .eval(conditions)
             .get::<kilogram_per_cubic_meter>(),
         epsilon = 0.01
     );
@@ -216,8 +214,12 @@ fn test_deserialize_material_only_iron_losses() {
             hysteresis_coefficient: 0.2
             eddy_current_coefficient: 1.0
         "};
-        let material: Material = yaml_serde::from_str(&serialized).unwrap();
-        if let IronLosses::JordanModel(model) = &material.iron_losses {
+        let material: Material = serde_yaml::from_str(&serialized).unwrap();
+
+        if let RpnToken::OperandFn(fun) = &material.iron_losses.tokens()[0] {
+            let model = (&**fun as &dyn std::any::Any)
+                .downcast_ref::<JordanModel>()
+                .unwrap();
             assert_eq!(
                 model.hysteresis_coefficient,
                 SpecificPower::new::<watt_per_kilogram>(0.2)
@@ -227,7 +229,7 @@ fn test_deserialize_material_only_iron_losses() {
                 SpecificPower::new::<watt_per_kilogram>(1.0)
             );
         } else {
-            panic!("wrong model")
+            panic!("wrong model");
         }
     }
     {
@@ -238,8 +240,11 @@ fn test_deserialize_material_only_iron_losses() {
             hysteresis_coefficient: 200 mW / kg
             eddy_current_coefficient: 1000 mW / kg
         "};
-        let material: Material = yaml_serde::from_str(&serialized).unwrap();
-        if let IronLosses::JordanModel(model) = &material.iron_losses {
+        let material: Material = serde_yaml::from_str(&serialized).unwrap();
+        if let RpnToken::OperandFn(fun) = &material.iron_losses.tokens()[0] {
+            let model = (&**fun as &dyn std::any::Any)
+                .downcast_ref::<JordanModel>()
+                .unwrap();
             assert_eq!(
                 model.hysteresis_coefficient,
                 SpecificPower::new::<watt_per_kilogram>(0.2)
@@ -249,7 +254,7 @@ fn test_deserialize_material_only_iron_losses() {
                 SpecificPower::new::<watt_per_kilogram>(1.0)
             );
         } else {
-            panic!("should not be a constant")
+            panic!("wrong model");
         }
     }
 }
@@ -261,6 +266,6 @@ fn test_deserialize_material_const_permeability() {
     name: M800-50A
     relative_permeability: 42.0
     "};
-    let material: Material = yaml_serde::from_str(&serialized).unwrap();
-    assert_eq!(material.relative_permeability().get(&[]), 42.0);
+    let material: Material = serde_yaml::from_str(&serialized).unwrap();
+    assert_eq!(material.relative_permeability().eval(&[]), 42.0);
 }

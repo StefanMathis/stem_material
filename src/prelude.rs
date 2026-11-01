@@ -5,9 +5,9 @@ is that one can include use `stem_material::prelude::*` to work efficiently with
 this crate.
  */
 
-pub use crate::iron_losses::*;
+pub use crate::ferromagnetic_permeability::*;
+pub use crate::jordan_loss_model::*;
 pub use crate::material::*;
-pub use crate::relative_permeability::*;
 pub use crate::si::*;
 
 // Reexport var_quantity, which is part of the public API of this crate

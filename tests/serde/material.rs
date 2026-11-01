@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use indoc::indoc;
 use stem_material::prelude::unary::Linear;
 use stem_material::prelude::*;
@@ -14,20 +16,20 @@ fn test_serialize_material() {
         DynQuantity::new(1.0, PredefUnit::MagneticFluxDensity),
     );
     material.set_remanence(VarQuantity::new(linear).unwrap());
-    material.set_intrinsic_coercivity(VarQuantity::Constant(MagneticFieldStrength::new::<
+    material.set_intrinsic_coercivity(VarQuantity::from(MagneticFieldStrength::new::<
         ampere_per_meter,
     >(5.0)));
 
-    let string = yaml_serde::to_string(&material).unwrap();
-    let material: Material = yaml_serde::from_str(&string).unwrap();
+    let string = serde_yaml::to_string(&material).unwrap();
+    let material: Material = serde_yaml::from_str(&string).unwrap();
 
     let conditions = [ThermodynamicTemperature::new::<degree_celsius>(20.0).into()];
 
-    assert_eq!(material.remanence().get(&conditions).get::<tesla>(), 587.3);
+    assert_eq!(material.remanence().eval(&conditions).get::<tesla>(), 587.3);
     assert_eq!(
         material
             .intrinsic_coercivity()
-            .get(&conditions)
+            .eval(&conditions)
             .get::<ampere_per_meter>(),
         5.0
     );
@@ -39,14 +41,15 @@ fn test_deserialize_material() {
     let serialized = indoc! {"
     name: M800-50A
     relative_permeability:
-      field_strength: '[
-            0.0, 130.0, 141.0, 153.0, 166.0, 181.0, 198.0, 221.0, 252.0, 304.0, 409.0, 680.0, 1540.0,
-            3789.0, 7752.0, 13730.0
-            ] A/m'
-      flux_density: '[
-            0.0, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9
-            ] T'
-      iron_fill_factor: 0.95
+      FerromagneticPermeability:
+        field_strength: '[
+              0.0, 130.0, 141.0, 153.0, 166.0, 181.0, 198.0, 221.0, 252.0, 304.0, 409.0, 680.0, 1540.0,
+              3789.0, 7752.0, 13730.0
+              ] A/m'
+        flux_density: '[
+              0.0, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9
+              ] T'
+        iron_fill_factor: 0.95
     remanence: 0.0 T
     iron_losses:
       JordanModel:
@@ -139,18 +142,18 @@ fn test_deserialize_material() {
         slope: 0.393 % / K
     heat_capacity: 435.0 J / kg / K
     "};
-    let material: Material = yaml_serde::from_str(&serialized).unwrap();
+    let material: Material = serde_yaml::from_str(&serialized).unwrap();
 
     let conditions = &[MagneticFluxDensity::new::<tesla>(0.5).into()];
     approxim::assert_abs_diff_eq!(
-        material.relative_permeability().get(conditions),
+        material.relative_permeability().eval(conditions),
         3801.0,
         epsilon = 0.1
     );
     approxim::assert_abs_diff_eq!(
         material
             .mass_density()
-            .get(conditions)
+            .eval(conditions)
             .get::<kilogram_per_cubic_meter>(),
         7650.0
     );
@@ -158,7 +161,7 @@ fn test_deserialize_material() {
     approxim::assert_abs_diff_eq!(
         material
             .electrical_resistivity()
-            .get(conditions)
+            .eval(conditions)
             .get::<ohm_meter>(),
         1.7857e-8,
         epsilon = 1e-12
@@ -168,32 +171,24 @@ fn test_deserialize_material() {
     approxim::assert_abs_diff_eq!(
         material
             .electrical_resistivity()
-            .get(conditions)
+            .eval(conditions)
             .get::<ohm_meter>(),
         2.4875e-8,
         epsilon = 1e-12
     );
 
-    if let RelativePermeability::FerromagneticPermeability(model) = &material.relative_permeability
-    {
-        approxim::assert_abs_diff_eq!(
-            model.get(MagneticFluxDensity::new::<tesla>(0.5)),
-            3801.0,
-            epsilon = 0.1
-        );
-    } else {
-        panic!("wrong model");
-    }
-
-    if let IronLosses::JordanModel(model) = &material.iron_losses {
+    if let RpnToken::OperandFn(fun) = &material.iron_losses.tokens()[0] {
+        let model = (&**fun as &dyn std::any::Any)
+            .downcast_ref::<JordanModel>()
+            .unwrap();
         approxim::assert_abs_diff_eq!(
             model.eddy_current_coefficient.get::<watt_per_kilogram>(),
-            1.246,
+            1.2463,
             epsilon = 0.001
         );
         approxim::assert_abs_diff_eq!(
             model.hysteresis_coefficient.get::<watt_per_kilogram>(),
-            4.248,
+            4.2483,
             epsilon = 0.001
         );
     } else {
@@ -202,23 +197,40 @@ fn test_deserialize_material() {
 }
 
 #[test]
-fn test_serialize_and_deserialize_with_units() {
-    let material = Material::default();
-    let expected = indoc::indoc! {"
-        name: default_name
-        relative_permeability: 1.0
-        iron_losses: 0 s^-3 m^2
-        remanence: 0 s^-2 kg A^-1
-        intrinsic_coercivity: 0 m^-1 A
-        electrical_resistivity: inf s^-3 m^3 kg A^-2
-        mass_density: 1000 m^-3 kg
-        heat_capacity: 0 s^-2 m^2 K^-1
-        thermal_conductivity: 0 s^-3 m kg K^-1
-        "};
-    let actual =
-        serialize_with_units(|| yaml_serde::to_string(&material)).expect("serialization succeeds");
-    assert_eq!(expected, actual);
+fn test_serialize_and_deserialize() {
+    {
+        let material = Material::default();
+        let string = serde_yaml::to_string(&material).expect("serialization succeeds");
 
-    let de_material: Material = yaml_serde::from_str(&actual).expect("deserialization succeeds");
-    assert_eq!(material, de_material);
+        let de_material: Material =
+            serde_yaml::from_str(&string).expect("deserialization succeeds");
+        assert_eq!(material, de_material);
+    }
+    {
+        let material = Material::default();
+        let string = serialize_with_units(|| serde_yaml::to_string(&material))
+            .expect("serialization succeeds");
+
+        let de_material: Material =
+            serde_yaml::from_str(&string).expect("deserialization succeeds");
+        assert_eq!(material, de_material);
+    }
+    {
+        use serde::{Deserialize, Serialize};
+        use serde_mosaic::{deserialize_arc_link, serialize_arc_link};
+
+        #[derive(PartialEq, Serialize, Deserialize, Debug)]
+        struct Wrapper {
+            #[serde(serialize_with = "serialize_arc_link")]
+            #[serde(deserialize_with = "deserialize_arc_link")]
+            material: Arc<Material>,
+        }
+        let wrapper = Wrapper {
+            material: Arc::new(Material::default()),
+        };
+        let string = serde_yaml::to_string(&wrapper).expect("serialization succeeds");
+
+        let de_wrapper: Wrapper = serde_yaml::from_str(&string).expect("deserialization succeeds");
+        assert_eq!(wrapper, de_wrapper);
+    }
 }

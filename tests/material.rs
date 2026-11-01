@@ -13,7 +13,7 @@ fn test_eq() {
         DynQuantity::new(1.0, PredefUnit::MagneticFluxDensity),
     );
     material.set_remanence(VarQuantity::new(linear).unwrap());
-    material.set_intrinsic_coercivity(VarQuantity::Constant(MagneticFieldStrength::new::<
+    material.set_intrinsic_coercivity(VarQuantity::from(MagneticFieldStrength::new::<
         ampere_per_meter,
     >(5.0)));
 
