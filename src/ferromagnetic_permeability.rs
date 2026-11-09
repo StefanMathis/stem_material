@@ -36,7 +36,7 @@ the permability curves given by the user accordingly).
 `H` values (simply because these extrema don't usually occur in nature).
 However, at the start of an iterative solver, extreme values may occur.
 To guarantee a stable iteration, the aforementioned strictly monotonously
-decreasing behaviour should still be guaranteed and in addition, no nonsensical
+decreasing behavior should still be guaranteed and in addition, no nonsensical
 values (e.g. negative permeability) should be calculated. For this reasons, the
 splines are extrapolated and clamped to guarantee these properties.
 
@@ -211,7 +211,7 @@ impl FerromagneticPermeability {
         let induction = induction_right_of_maximum.to_vec();
         let mut permeability = permeability_right_of_maximum.to_vec();
 
-        // Modify mu_r(B) to ensure strictly decreasing behaviour.
+        // Modify mu_r(B) to ensure strictly decreasing behavior.
         if permeability.len() > 2 {
             for idx in (0..(permeability.len() - 2)).rev() {
                 if permeability[idx] < permeability[idx + 1] {

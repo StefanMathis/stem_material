@@ -13,8 +13,8 @@ of a [`Material`].
 ## Ferromagnetic permeability
 
 The [`FerromagneticPermeability`] struct offers a spline-based way to model the
-ferromagnetic behaviour of a material from measured datapoints. It is
-particularily optimized for usage with iterative solvers and slightly modifies
+ferromagnetic behavior of a material from measured datapoints. It is
+particularly optimized for usage with iterative solvers and slightly modifies
 the resulting curve to achieve numerical stability and fast convergence.
 Additionally, it can also take the iron fill factor of lamination sheets into
 account.

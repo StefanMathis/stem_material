@@ -32,7 +32,7 @@ level.
 
 The image below shows a comparison between raw loss data and the fitted
 [`JordanModel`] from `examples/jordan_model.rs`. While the model can represent
-the loss behaviour at lower frequencies very well, it fails at higher
+the loss behavior at lower frequencies very well, it fails at higher
 frequencies for this particular set of data points.
 
 ![Jordan model][jordan_model]
