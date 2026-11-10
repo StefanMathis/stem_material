@@ -1,0 +1,20 @@
+---
+Material:  
+  # Magnet material as defined in brochure "High-Performance Ferrite Magnet NMF Series" from 2014 by Hitachi Metals
+  name: NMF-12J 430mT
+  relative_permeability: 1.05
+  remanence: 
+    FirstOrderTaylor:
+      base_value: 0.43 T
+      expansion_point: 20.0 °C
+      slope: -0.1733 % / K # 17,33 % remanence loss per 100 K
+  iron_losses: 0
+  mass_density: 4950.0 kg / m^3 # https://www.bomatec.com/wp-content/uploads/2021/12/BMHFa-3227.pdf
+  electrical_resistivity: 1e6 Ohm*m
+  intrinsic_coercivity:
+    FirstOrderTaylor:
+      base_value: 430 kA/m
+      expansion_point: 20.0 °C
+      slope: 0.11 % / K # 11 % intrinsic coercivity gain per 100 K
+  heat_capacity: 700.0 J / kg / K # https://www.bomatec.com/wp-content/uploads/2021/12/BMHFa-3227.pdf
+  thermal_conductivity: 4.0 W / m / K # https://www.bomatec.com/wp-content/uploads/2021/12/BMHFa-3227.pdf

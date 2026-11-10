@@ -65,8 +65,6 @@ doc = ::embed_doc_image::embed_image!("relative_permeability", "docs/img/relativ
     doc = "**Doc images not enabled**. Compile docs with `cargo doc --features 'doc-images'` and Rust version >= 1.54."
 )]
 
-use std::f64::INFINITY;
-
 use akima_spline::AkimaSpline;
 
 use var_quantity::uom::si::f64::*;
@@ -194,7 +192,7 @@ impl FerromagneticPermeability {
         }
 
         let mut idx_max = None;
-        let mut min_value = std::f64::NEG_INFINITY;
+        let mut min_value = f64::NEG_INFINITY;
         for (idx, value) in permeability.iter().enumerate() {
             if *value > min_value {
                 min_value = *value;
@@ -292,13 +290,13 @@ impl QuantityFunction for FerromagneticPermeability {
                 return self
                     .from_field_strength
                     .eval_infallible(f.value.abs())
-                    .clamp(1.0, INFINITY)
+                    .clamp(1.0, f64::INFINITY)
                     .into();
             } else if f.unit == Unit::from(PredefUnit::MagneticFluxDensity) {
                 return self
                     .from_flux_density
                     .eval_infallible(f.value.abs())
-                    .clamp(1.0, INFINITY)
+                    .clamp(1.0, f64::INFINITY)
                     .into();
             }
         }

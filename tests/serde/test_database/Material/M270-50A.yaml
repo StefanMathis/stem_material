@@ -1,0 +1,27 @@
+---  
+Material:  
+  name: M270-50A 
+  relative_permeability:
+    FerromagneticPermeability:
+      field_strength: '[
+            0.0, 11.57, 22.11, 31.71, 40.47, 48.50, 55.29, 64.02, 75.66, 89.24, 107.67, 134.83, 179.45,
+            276.45, 582.98, 1583.11, 3578.65, 6665.91, 11303.32, 18871.00, 29765.16, 45905.16,
+            69372.42, 102918.79, 150142.01, 215692.99, 219224.15
+        ] A/m'
+      flux_density: '[
+            0.0, 0.0970, 0.1940, 0.2910, 0.3880, 0.4851, 0.5821, 0.6791, 0.7761, 0.8731, 0.9701,
+            1.0672, 1.1642, 1.2614, 1.3588, 1.4571, 1.5566, 1.6576, 1.7606, 1.8674, 1.9674, 2.0674,
+            2.1674, 2.2674, 2.3674, 2.4674, 2.4720
+        ] T'
+      polarization: 
+      iron_fill_factor: 0.95
+  remanence: 0.0 T
+  iron_losses:
+    JordanModel:
+      hysteresis_coefficient: 2.109 W/kg
+      eddy_current_coefficient: 0.5977 W/kg
+  intrinsic_coercivity: 5.0 A/m # value from https://www.emt-net.de/elektrobleche/Allgemeine-Informationen-zu-Elektroblechen.pdf
+  mass_density: 7650.0 kg / m^3 # value from https://www.emt-net.de/elektrobleche/Allgemeine-Informationen-zu-Elektroblechen.pdf
+  electrical_resistivity: 0.48e-6 Ohm*m # value from https://www.emt-net.de/elektrobleche/Allgemeine-Informationen-zu-Elektroblechen.pdf
+  heat_capacity: 435.0 J / kg / K # value from https://openhsu.ub.hsu-hh.de/entities/publication/358
+  thermal_conductivity: 30.0 W / m / K # value from https://www.energy.gov/sites/prod/files/2014/03/f10/ape030_bennion_2012_o.pdf

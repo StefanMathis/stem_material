@@ -4,7 +4,7 @@ use serde_mosaic::{DatabaseManager, SerdeYaml};
 use stem_material::prelude::*;
 
 fn create_dbm() -> DatabaseManager {
-    return DatabaseManager::open("stem_test_database/src", SerdeYaml).expect("must exist");
+    return DatabaseManager::open("tests/serde/test_database", SerdeYaml).expect("must exist");
 }
 
 #[test]

@@ -301,7 +301,7 @@ fn default_relative_permeability() -> VarQuantity<f64> {
 }
 
 fn default_electrical_resistivity() -> VarQuantity<ElectricalResistivity> {
-    return VarQuantity::from(ElectricalResistivity::new::<ohm_meter>(std::f64::INFINITY));
+    return VarQuantity::from(ElectricalResistivity::new::<ohm_meter>(f64::INFINITY));
 }
 
 fn default_mass_density() -> VarQuantity<MassDensity> {

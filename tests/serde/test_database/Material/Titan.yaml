@@ -1,0 +1,14 @@
+Material:
+  # Data taken from https://www.mit.edu/~6.777/matprops/titanium2.htm
+  name: "Titan"
+  relative_permeability: 1.00005
+  remanence: 0.0
+  mass_density: 1.225 kg / m^3 # https://macinstruments.com/blog/what-is-the-density-of-air-at-stp/
+  electrical_resistivity:
+    FirstOrderTaylor:
+      base_value: 1 Ohm*m /(2.7e6)
+      expansion_point: 20.0 °C
+      slope: 0.35 % / K
+  heat_capacity: 528 J / kg / K
+  intrinsic_coercivity: 0.0
+  thermal_conductivity: 219 W / m / K
